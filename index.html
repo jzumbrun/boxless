@@ -12,7 +12,7 @@
     <div class="top-bar">
       <div class="top-bar-left">
         <ul class="menu">
-          <li class="menu-text">/*paramly*/</li>
+          <li class="menu-text"><strong>/*paramly*/</strong></li>
           <li><a href="#">Source</a></li>
           <li><a href="#">Wiki</a></li>
         </ul>
@@ -30,17 +30,49 @@
     </div>
 
     <div class="row">
+      <div class="medium-12 columns">
+        <h3>@#$</h3>
+        <p>One endpoint. Write SQL. No server code.</p>
+      </div>
+    </div>
+	  
+    <p>Allow Queries JSON</p>
+    <code class="html">
+        {
+            "greetings": "SELECT /*#select*/ FROM greetings WHERE greeting=/*$greeting*/ AND account_id=/*@account_id*/ LIMIT /*$limit*/"
+	}
+      
+    </code>
+	  
+    <p>JSON POST</p>
+    <code class="html">
+      {
+	    "queries": [
+	    	{
+	            "name": "greetings",
+	            "params": {
+	    	        "#select": "*",
+	                "$greeting": "Hello Mates!",
+	                "@account_id": "123",
+	                "$limit": "1"
+	            }
+	        }
+	    ]
+      }
+    </code>
+
+    <div class="row">
       <div class="medium-4 columns">
         <h3>#</h3>
-        <p>/*#column_ids*/ allows you to select which columns to return</p>
+        <p>/*#column_ids*/ Allows you to select which columns to return. These values will be quoted with proper ticks.</p>
       </div>
       <div class="medium-4 columns">
         <h3>$</h3>
-        <p>/*$values*/ allows you to query values</p>
+        <p>/*$values*/ Allows you to query values</p>
       </div>
       <div class="medium-4 columns">
         <h3>@</h3>
-        <p>/*@authorized_values*/ allows you to set or query with authenticated values from  jwt tokens</p>
+        <p>/*@account_values*/ Allows you to set or query with authenticated values from jwt tokens</p>
       </div>
     </div>
 
