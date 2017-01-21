@@ -36,30 +36,37 @@
       </div>
     </div>
 	  
-    <p>Allow Queries JSON</p>
-    <code class="html">
-        {
-            "greetings": "SELECT /*#select*/ FROM greetings WHERE greeting=/*$greeting*/ AND account_id=/*@account_id*/ LIMIT /*$limit*/"
-	}
-      
-    </code>
+    <div class="row">
+      <div class="medium-12 columns">
+        <p>Allow Queries JSON</p>
+	    <code class="html">
+		{
+		    "greetings": "SELECT /*#select*/ FROM greetings WHERE greeting=/*$greeting*/ AND account_id=/*@account_id*/ LIMIT /*$limit*/"
+		}
+	    </code>
+      </div>
+    </div>
 	  
-    <p>JSON POST</p>
-    <code class="html">
-      {
-	    "queries": [
-	    	{
-	            "name": "greetings",
-	            "params": {
-	    	        "#select": "*",
-	                "$greeting": "Hello Mates!",
-	                "@account_id": "123",
-	                "$limit": "1"
-	            }
-	        }
-	    ]
-      }
-    </code>
+    <div class="row">
+      <div class="medium-12 columns">
+        <p>JSON POST</p>
+	    <code class="html">
+	      {
+		    "queries": [
+			{
+			    "name": "greetings",
+			    "params": {
+				"#select": "*",
+				"$greeting": "Hello Mates!",
+				"@account_id": "123",
+				"$limit": "1"
+			    }
+			}
+		    ]
+	      }
+	    </code>
+      </div>
+    </div>
 
     <div class="row">
       <div class="medium-4 columns">
