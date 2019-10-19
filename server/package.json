@@ -1,0 +1,36 @@
+{
+  "name": "paramly",
+  "private": true,
+  "version": "0.1.0",
+  "description": "paramly.com",
+  "author": "paramly (Jon Zumbrun)",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "_moduleAliases": {
+    "@app": "."
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "express": "^4.17.1",
+    "express-jwt": "^5.3.1",
+    "glob": "6.0.4",
+    "handlebars": "^4.4.0",
+    "lodash": "^4.17.15",
+    "module-alias": "^2.2.1",
+    "mysql": "^2.17.1"
+  },
+  "devDependencies": {
+    "axios": "0.19.0",
+    "eslint": "3.12.2",
+    "eslint-plugin-react": "6.8.0",
+    "expect": "^24.9.0",
+    "mocha": "6.2.0"
+  }
+}

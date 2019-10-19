@@ -1,0 +1,20 @@
+{
+  "apps": [{
+    "name": "paramly",
+    "script": "server/app.js",
+    "exec_mode": "cluster",
+    "instances": 2,
+    "max_memory_restart": "100M",
+    "merge_logs": true
+  }],
+  "deploy": {
+    "production": {
+      "user": "root",
+      "host": ["paramly-worker-1"],
+      "ref": "origin/master",
+      "repo": "git@bitbucket.org:paramly/paramly.git",
+      "path": "/var/www/paramly",
+      "post-deploy": "./deploy"
+    }
+  }
+}

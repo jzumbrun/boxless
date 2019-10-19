@@ -1,0 +1,223 @@
+#!/bin/bash
+
+usage(){
+cat << EOF
+usage: $0 options
+
+This please choose which provision to run.
+
+OPTIONS:
+   -h      Show this message
+   -s      Site
+   -e      Environment
+EOF
+}
+
+begin(){
+    export site='paramly'
+    export log='/tmp/provision.log'	
+    export environment='vagrant'
+    export home='/root'
+    export db_name='paramly'
+    export db_password='#!paramly321321'
+
+    touch $log
+    echo > $log # clear log
+      
+    local OPTIND
+    while getopts ":hs:p:e:" opt; do
+        case "${opt}" in
+            h)
+                usage
+                exit 1
+                ;;
+            s)
+                message "Site set to: ${OPTARG}"
+                ;;
+            e)
+                message "Environment set to: ${OPTARG}"
+                environment=( ${OPTARG} )
+                ;;
+            \?)
+                message "Invalid option: -${OPTARG}"
+                usage
+                exit 1
+                ;;
+            :)
+                message "Option -${OPTARG} requires an argument."
+                usage
+                exit 1
+                ;;
+            esac
+    done
+    shift $(( OPTIND - 1 ));
+}
+
+log() {
+    echo "$1" >> $log
+}
+
+message() {
+    echo "$1"
+    echo "$1" >> $log
+}
+
+is_installed() {
+    if which "$1" > /dev/null; then
+        true
+    else
+        false
+    fi
+}
+
+install() {
+    if ! is_installed "$1"; then
+        apt-get install --yes --force-yes "$1" >> $log
+        message "[+] installed $1"
+    else
+        message "[-] $1 already installed"
+    fi
+}
+
+setHome(){
+    if [ "$environment" = "vagrant" ]; then
+        home='/home/vagrant'
+    fi
+
+    message "[+] home set to $home"
+}
+
+provisionSwap(){
+    if ! swapon -s | grep /swapfile > /dev/null; then 
+        message '[+] Provisioning swap'
+        dd if=/dev/zero of=/swapfile bs=1024 count=256k >> $log
+        mkswap /swapfile >> $log
+        swapon /swapfile >> $log
+        echo '/swapfile       none    swap    sw      0       0' >> /etc/fstab
+        echo 10 | tee /proc/sys/vm/swappiness
+        echo vm.swappiness = 10 | tee -a /etc/sysctl.conf
+        chown root:root /swapfile 
+        chmod 0600 /swapfile
+        message '[!] swap provisioned'
+    else
+        message '[-] swap already provisioned'
+    fi
+}
+
+provisionApt(){
+    message '[+] Provisioning apt'
+    apt-get update >> $log
+    message '[!] apt provisioned'
+}
+
+provisionWWW(){
+    message '[+] Adding www'
+    if [ ! -d /var/www ]; then
+        mkdir /var/www
+        message '[!] www added'
+    else
+        message '[-] www already exists'
+    fi
+
+    message "[!] Adding /var/www/$site"
+    if [ ! -d "/var/www/$site" ]; then
+        mkdir "/var/www/$site"
+        message "[!] Added /var/www/$site"
+    else
+        message "[-] /var/www/$site already exists"
+    fi
+}
+
+provisionGit(){
+    message '[+] Provisioning git'
+    install git
+}
+
+provisionNode(){
+    message '[+] Provisioning nodejs'
+    if ! is_installed node; then
+        message '[+] Installing nodejs'
+        wget --quiet https://nodejs.org/dist/v12.10.0/node-v12.10.0-linux-x64.tar.xz >> $log
+        tar -C /usr/local --strip-components 1 -xJf node-v12.10.0-linux-x64.tar.xz >> $log
+        message '[!] nodejs installed'
+    else
+        message '[-] nodejs already installed'
+    fi
+    
+}
+
+provisionPM2(){
+    message '[+] Provisioning pm2'
+    if ! is_installed pm2; then
+        message '[+] Installing pm2'
+        npm install pm2 -g >> $log
+        pm2 startup ubuntu >> $log
+        message '[!] pm2 installed'
+    else
+        message '[-] pm2 already installed'
+    fi
+}
+
+provisionMocha(){
+    message '[+] Provisioning mocha'
+    if ! is_installed mocha; then
+        message '[+] Installing mocha'
+        npm install mocha -g >> $log
+        message '[!] mocha installed'
+    else
+        message '[-] mocha already installed'
+    fi
+}
+
+provisionMySQL(){
+    if [ "$environment" != "development" ] && [ "$environment" != "vagrant" ]; then
+        message '[-] mysql ignored'
+        return;
+    fi
+
+    message '[+] Provisioning mysql'
+    if ! is_installed mysql; then
+        message '[+] Installing mysql'
+        install mysql-server
+
+        ufw enable
+        ufw allow mysql
+        systemctl start mysql
+        systemctl enable mysql
+
+        mysql -e "CREATE DATABASE ${db_name} /*\!40100 DEFAULT CHARACTER SET utf8 */;"
+        mysql -e "CREATE USER ${db_name}@localhost IDENTIFIED BY '${db_password}';"
+        mysql -e "GRANT ALL PRIVILEGES ON ${db_name}.* TO '${db_name}'@'localhost';"
+        mysql -e "FLUSH PRIVILEGES;"
+        systemctl restart mysql
+        message '[!] mysql installed and started'
+    else
+        message '[-] mysql already installed'
+    fi
+}
+
+provision(){
+
+    message '[+] Provisioning...'
+    setHome
+    provisionSwap
+    provisionApt
+    provisionWWW
+    provisionGit
+    provisionNode
+    provisionPM2
+    provisionMocha
+    provisionMySQL
+}
+
+end(){
+    message '[!] Provision Complete [!]'
+    exit 0
+}
+
+# calls
+begin "$@"
+
+provision
+
+end
