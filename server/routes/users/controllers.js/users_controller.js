@@ -8,83 +8,62 @@ module.exports = function (server) {
     /**
      * Current User Update
      */
-    server.put('/users/current', function (req, res) {
-        var User = mongoose.model('User')
+    server.put('/users/current', async (req, res) => {
 
-        User.current(req.user._id, function(err, user) {
+        const user = await UsersModel.getById(req.user._id)
 
-            // If something weird happens, abort.
-            if (err || !user) {
-                return res.status(422).send({errors: {user: {message: 'user_not_found'}}})
-            }
-            
-            if(req.body.password){
-                user.password = req.body.password
-            }
+        // If something weird happens, abort.
+        if (err || !user) {
+            return res.status(422).send({'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
+        }
 
-            user.first_name = req.body.first_name
-            user.last_name = req.body.last_name
-            user.email = req.body.email
-            
-            user.save(function(err) {
-                if (err) {
-                    return res.status(422).send(err)
-                }
+        if(req.body.password) {
+            user.password = req.body.password
+        }
 
-                res.send({ token: user.token() })
+        user.first_name = req.body.first_name
+        user.last_name = req.body.last_name
+        user.email = req.body.email
 
-            })
+        try {
+            await UsersModel.update(user)
+            res.send({ token: UsersModel.token(user) })
+        } catch(err) {
+            return res.status(422).send(err)
+        }
 
-        })
     })
 
     /**
      * Sign in
      */
-    server.put('/users/signin', function (req, res) {
-        var User = mongoose.model('User'),
-            Team = mongoose.model('Team')
-
-        User.findOne({
-            email: req.body.email,
-             // Do NOT allow admin users. Let's keep them separate.
-            roles: {$in: ['user']}
-        }, function(err, user) {
-
-            // If something weird happens, abort.
-            if (err || !user) {
-                return res.status(422).send({errors: {email: {message: 'email_not_found'}}})
-            }
-            
-            if(!user.passwordMatches(req.body.password)){
-                return res.status(422).send({errors: {password: {message: 'password_wrong'}}})
-            }
-
-            Team.findOne({_id: user.team_id}, function(err, team){
-                // If something weird happens, abort.
-                if (err) {
-                    return res.status(422).send({errors: {team: {message: 'team_not_found'}}})
-                }
-                res.send({ subdomain: team.subdomain, token: user.token() })
-            })
-
-        })
-
+    server.put('/users/signin',  async (req, res) => {
+        try {
+            const user = await UsersModel.getByEmailAndAccess({
+                email: req.body.email,
+                 // Do NOT allow admin users. Let's keep them separate.
+                access: 'user'
+                })
+            if (!user || !user.passwordMatches(req.body.password))
+                return res.status(422).send({'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
+        } catch(err) {
+            return res.status(422).send({'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
+        }
     })
     
     /**
      * Sign up
      */
-    server.post('/users/signup', function (req, res) {
+    server.post('/users/signup', async (req, res) => {
+        try {
+            console.log('@@@/users/signup', req.body)
+            const response = await UsersModel.insert(req.body.name, req.body.email, req.body.password)
+            const user = await UserModel.getById(response.id)
+            res.send({ token: user[0].token() })
+        } catch(err) {
 
-        UserModel.insert(req.body.email, req.body.password)
-        .then((users) => {
-            let user = users[0]
-            res.send({ token: UserModel.token(user.id, user.email) })
-        })
-        .catch((error) => {
-            return res.status(422).send(error)
-        })
+            return res.status(422).send({'err': err, 'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
+        }
 
     })
 
@@ -104,14 +83,14 @@ module.exports = function (server) {
             if (err || !user) {
                 return res.status(422).send({errors: {email: {message: 'email_not_found'}}})
             }
-            
+
             user.reset_password = crypto.randomBytes(16).toString('hex')
             user.save(function(err) {
-                
+
                 if (err) {
                     return res.status(422).send(err)
                 }
-                
+
                 message = mail.send({
                     view: 'forgot',
                     message: {
@@ -148,7 +127,7 @@ module.exports = function (server) {
             if (err || !user) {
                 return res.status(422).send({errors: {email: {message: 'reset_password_wrong'}}})
             }
-            
+
             user.reset_password = ''
             user.password = req.body.password
             user.save(function(err) {

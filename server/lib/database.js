@@ -11,7 +11,7 @@ class Database {
         return this._pool
     }
 
-    query(sql, values, callback){
+    query(sql, values){
         return new Promise((resolve, reject) => {
             this._pool.getConnection((connection_error, connection) => {
                 if(connection_error) return reject(connection_error)

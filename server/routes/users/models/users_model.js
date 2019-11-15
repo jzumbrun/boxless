@@ -6,23 +6,43 @@ const Model = require('@app/lib/model'),
 class UsersModel extends Model{
 
     /**
-     * Get current user
+     * Get by Id
      * return promise
      */
-    getCurrent(id) {
+    getById(id) {
         return this.query('SELECT * FROM users WHERE id = ?', [id])
+    }
+
+    /**
+     * Get by email and access
+     * return promise
+     */
+    getByEmailAndAccess(email) {
+        return this.query('SELECT * FROM users WHERE email = ?', [email])
     }
 
     /**
      * Insert User
      * return promise
      */
-    insert(email, password) {
+    insert(name, email, password) {
         return this.validateUniqueEmail(email)
         .then(() => {
             var hash = this.hashPassword(password)
-            return this.query('INSERT INTO users (email, password, salt) VALUES(?, ?, ?)', [email, hash.password, hash.salt])
+            console.log([name, email, hash.password, hash.salt, 'user', new Date().toISOString().slice(0, 19).replace('T', ' ')])
+            return this.query('INSERT INTO users (name, email, password, salt, access, created_at) VALUES(?, ?, ?, ?, ?, ?)',
+                [name, email, hash.password, hash.salt, 'user', new Date().toISOString().slice(0, 19).replace('T', ' ')])
+        }).catch((err) => {
+            console.log('@@@ERROR', err)
         })
+    }
+
+    /**
+     * Update User
+     * return promise
+     */
+    update(user) {
+        return this.query('INSERT INTO users (email, password, salt) VALUES(?, ?, ?)', [email, hash.password, hash.salt])
     }
 
     /**
@@ -55,10 +75,11 @@ class UsersModel extends Model{
      * Token
      * return string
      */
-    token(id, email) {
+    token(user) {
         return jwt.sign({
-            id: id,
-            email: email
+            id: user.id,
+            email: user.email,
+            access: user.access
         }, config.secret, { expiresIn: '5h' })
     }
 }

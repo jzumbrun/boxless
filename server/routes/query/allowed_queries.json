@@ -2,7 +2,7 @@
     {
         "name": "greetings.truncate",
         "expression": "TRUNCATE TABLE greetings",
-        "access": ["user.admin"]
+        "access": [""]
     },
     {
         "name": "greetings.delete",

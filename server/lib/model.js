@@ -14,8 +14,8 @@ class Model {
         return this._pool.getConnection(callback)
     }
 
-    query(sql, values, callback) {
-        return this.db.query(sql, values, callback)
+    query(sql, values) {
+        return this.db.query(sql, values)
     }
 
     escape(query) {

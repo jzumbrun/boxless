@@ -1,0 +1,7 @@
+[
+    {
+        "name": "_.users.signup",
+        "url": "/users/signup",
+        "method": "post"
+    }
+]
