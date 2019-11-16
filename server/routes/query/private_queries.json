@@ -1,7 +1,7 @@
 [
     {
-        "name": "_.users.signup",
-        "url": "/users/signup",
-        "method": "post"
+        "name": "core.users.signup",
+        "controller": true,
+        "access": [""]
     }
 ]

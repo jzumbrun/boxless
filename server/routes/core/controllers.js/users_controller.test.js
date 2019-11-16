@@ -11,12 +11,8 @@ describe('Users', function() {
         it('signup', (done) => {
             axios.post(url, {
                 queries: [{
-                    name: '_.users.signup',
-                    params: {
-                        'name': 'JZ',
-                        'email': 'jzumbrun@gmail.com',
-                        'password': 'jz321321'
-                    }
+                    name: 'core.users.signup',
+                    params: 
                 }]
             }).then(response => {
                 expect(response.status).toEqual(200)

@@ -13,6 +13,9 @@ module.exports = (server) => {
             allowed_queries = require('../allowed_queries')
             private_queries = require('../private_queries')
 
+            // private_queries should NEVER be ovverridden
+            allowed_queries = {...allowed_queries, ...private_queries}
+
         // Send the result
         function result(connection, query, error, rows){
             var result = {}
@@ -38,20 +41,16 @@ module.exports = (server) => {
                 req.body.queries = req.body.queries || []
                 req.body.queries.forEach((request_query) => {
 
-                    // Reroute private queries
-                    let _query = private_queries.find(q => q.name == request_query.name)
-                    if(_query) {
-                        req.url = _query.url
-                        req.method = _query.method
-                        req.body = request_query.params
-                        server.handle(req, res)
-                        return
-                    }
-
                     let query = allowed_queries.find(q => q.name == request_query.name)
                     // Do we have sql?
                     if(!query){
                         return result(connection, request_query, {'errno': 1000, 'code': 'ERROR_QUERY_NOT_FOUND'})
+                    }
+
+                    if(query.controller){
+                        let [route, controller_name, method] = query.name.spit('.')
+                        controller = require(`@/routes/${route}/${controller_name}_controller`)
+                        result(connection, request_query, error, controller[method](request_query.parms, req, res))
                     }
 
                     // Hook to allow for params
