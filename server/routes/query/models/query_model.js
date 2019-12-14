@@ -1,28 +1,29 @@
 const Model = require('@app/lib/model')
-const Handlebars = require('handlebars');
 
-class QueryModule extends Model{
+class QueryModel extends Model {
 
-    /** 
-     * Format
-     * @query string
-     * @ params array
-     * return string
+    /**
+     * Query
+     * @param {string} query 
+     * @param {object} params 
+     * @param {User} user 
+     * @return Promise
      */
-    format(query='', req_params={}, user_params={}) {
-        const template = Handlebars.compile(query)
-        query = template({...req_params, ...user_params});
+    query(query, params = {}, user = {}) {
+
         // Replace with string values
-        return query.replace(/\/\*(\$\w+)\*\//g, (text, key) => {
-            return req_params[key] ? this.escape(req_params[key]) : text
+        query = query.replace(/\/\*(\$\w+)\*\//g, (text, key) => {
+            return params[key] ? this.escape(params[key]) : text
         // Replace with field ids
         }).replace(/\/\*(#\w+)\*\//g, (text, key) => {
-            return req_params[key] ? this.escapeId(req_params[key]) : text
+            return params[key] ? this.escapeId(params[key]) : text
         // Replace with authorized values
         }).replace(/\/\*(@\w+)\*\//g, (text, key) => {
-            return user_params[key] ? this.escape(user_params[key]) : text
+            return user[key] ? this.escape(user[key]) : text
         })
+
+        return super.query(query)
     }
 }
 
-module.exports = new QueryModule()
+module.exports = new QueryModel()

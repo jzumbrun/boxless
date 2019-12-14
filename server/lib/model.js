@@ -10,12 +10,44 @@ class Model {
         return this._pool
     }
 
-    getConnection(callback){
-        return this._pool.getConnection(callback)
+    getConnection(){
+        return this._db.getConnection()
     }
 
-    query(sql, values) {
-        return this.db.query(sql, values)
+    /**
+     * Query
+     * @param {string} sql 
+     * @param {object} values 
+     */
+    async query(sql, values = {}, options={}) {
+        const connection = await this.getConnection()
+        return new Promise((resolve, reject) => {
+            connection.query(sql, values, (error, rows) => {
+                if(error) reject(error)
+                else if(options.first && rows[0]) resolve(rows[0])
+                else if(options.first) resolve({})
+                else resolve(rows)
+            })
+        })
+    }
+
+    /**
+     * Query First
+     * @param {string} sql 
+     * @param {object} values 
+     */
+    async queryFirst(sql, values = {}) {
+        return this.query(sql, values, {first: true})
+    }
+
+    async release() {
+        try {
+            const connection = await this.getConnection()
+            connection.release()
+        } catch(error) {
+            // Just ignore the error
+        }
+        
     }
 
     escape(query) {

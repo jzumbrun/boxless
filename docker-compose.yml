@@ -1,0 +1,29 @@
+version: "3"
+services:
+  app:
+    container_name: app
+    restart: always
+    build: .
+    command: make docker-compose/build
+    volumes:
+      - .:/var/www/app
+    depends_on:
+      - db
+    ports:
+      - "8081:8081"
+      - "5858:5858"
+    links:
+      - db
+  db:
+    container_name: mysql
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: b33pb00p
+      MYSQL_DATABASE: paramly
+      MYSQL_USER: paramly
+      MYSQL_PASSWORD: "#!paramly321321"
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "3306:3306"

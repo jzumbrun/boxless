@@ -2,31 +2,31 @@
     {
         "name": "greetings.truncate",
         "expression": "TRUNCATE TABLE greetings",
-        "access": [""]
+        "access": ["user"]
     },
     {
         "name": "greetings.delete",
         "expression": "DELETE FROM greetings WHERE id=/*$id*/",
-        "access": [""]
+        "access": ["user"]
     },
     {
         "name": "greetings.select",
         "expression": "SELECT /*#select*/ FROM greetings WHERE description=/*$description*/ LIMIT /*$limit*/",
-        "access": [""]
+        "access": ["user"]
     },
     {
         "name": "greetings.select.all",
         "expression": "SELECT /*#select*/ FROM greetings",
-        "access": [""]
+        "access": ["user"]
     },
     {
         "name": "greetings.insert",
         "expression": "INSERT INTO greetings (description, words) VALUES (/*$description*/, /*$words*/)",
-        "access": [""]
+        "access": ["user"]
     },
     {
         "name": "greetings.update",
         "expression": "UPDATE greetings SET description=/*$description*/ WHERE id=/*$id*/",
-        "access": [""]
+        "access": ["user"]
     }
 ]

@@ -1,7 +1,0 @@
-[
-    {
-        "name": "core.users.signup",
-        "controller": true,
-        "access": [""]
-    }
-]

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="//dhbhdrzi4tiry.cloudfront.net/cdn/sites/foundation.min.css">
   </head>
   <body>
-    
+
     <!-- Start Top Bar -->
     <div class="top-bar">
       <div class="top-bar-left">
@@ -35,40 +35,40 @@
         <p>One endpoint. Write SQL. No server code.</p>
       </div>
     </div>
-	  
+
     <hr>
-	  
+
     <div class="row">
       <div class="medium-12 columns">
         <h3>Allow Queries JSON</h3>
-	    <code class="html">
-		{
-		    "greetings": "SELECT /*#select*/ FROM greetings WHERE greeting=/*$greeting*/ AND account_id=/*@account_id*/ LIMIT /*$limit*/"
-		}
-	    </code>
+        <code class="html">
+        {
+            "greetings": "SELECT /*#select*/ FROM greetings WHERE greeting=/*$greeting*/ AND account_id=/*@account_id*/ LIMIT /*$limit*/"
+        }
+        </code>
       </div>
     </div>
-	  
+      
     <hr>
-	  
+
     <div class="row">
       <div class="medium-12 columns">
         <h3>JSON POST</h3>
-	    <code class="html">
-	      {
-		    "queries": [
-			{
-			    "name": "greetings",
-			    "params": {
-				"#select": "*",
-				"$greeting": "Hello Mates!",
-				"@account_id": "123",
-				"$limit": "1"
-			    }
-			}
-		    ]
-	      }
-	    </code>
+        <code class="html">
+          {
+            "queries": [
+            {
+                "name": "greetings",
+                "params": {
+                "#select": "*",
+                "$greeting": "Hello Mates!",
+                "@account_id": "123",
+                "$limit": "1"
+                }
+            }
+            ]
+          }
+        </code>
       </div>
     </div>
 

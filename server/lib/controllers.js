@@ -1,5 +1,4 @@
-const glob = require('glob'),
-    config = require('../config')
+const glob = require('glob')
 
 /**
  * Controllers
@@ -10,11 +9,11 @@ class Controllers {
     /**
      * Load all of the controller files
      */
-    load(server ) {
+    load() {
         var files = glob.sync('server/routes/**/*_controller.js')
 
         files.forEach(function(file) {
-            require(`../../${file}`)(server)
+            require(`../../${file}`)
         })
 
     }

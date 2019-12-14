@@ -2,29 +2,30 @@ const config = require('@app/config'),
     mysql = require('mysql')
 
 class Database {
-    constructor(){
+    constructor()  {
         this._pool = {}
         this._connect()
+        this._connection = null
     }
 
-    getPool(){
+    getPool() {
         return this._pool
     }
 
-    query(sql, values){
+    getConnection() {
+        // Check request cache
+        if(this._connection) return this._connection
         return new Promise((resolve, reject) => {
             this._pool.getConnection((connection_error, connection) => {
                 if(connection_error) return reject(connection_error)
-                connection.query(sql, values, (query_error, rows) => {
-                    if(query_error) return reject(query_error)
-                    return resolve(rows)
-                })
+                // Set to request cache
+                this._connection = connection
+                return resolve(connection)
             })
         })
     }
 
-    _connect(){
-
+    _connect() {
         this._pool = mysql.createPool({
             connectionLimit: config.db.connectionLimit,
             host     : config.db.host,
@@ -32,7 +33,6 @@ class Database {
             password : config.db.password,
             database : config.db.database
         })
-
     }
 }
 

@@ -1,1 +1,0 @@
-select /*#fields*/ from greetings where greeting=/*$fields*/ and access_id=/*@fields*/ LIMIT /*$limit*/

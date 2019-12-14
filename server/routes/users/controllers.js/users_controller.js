@@ -1,26 +1,25 @@
-const UsersModel = require('../models/users_model')
+const UsersModel = require('@app/routes/users/models/users_model')
+const crypto = require('crypto')
+const server = require('@app/lib/server')
 
-var crypto = require('crypto'),
-    config = require('../../../config')
 
 /**
  * Current User Update
  */
-module.exports.current = async (params, req, res) => {
+server.put('/users', async (req, res) => {
 
-    const user = await UsersModel.getById(req.user._id)
+    const user = await UsersModel.getById(req.user.id)
 
     // If something weird happens, abort.
-    if (err || !user) {
+    if (!user) {
         return res.status(422).send({'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
     }
 
     if(req.body.password) {
-        user.password = req.body.password
+        user.password = UsersModel.hashPassword(req.body.password, user.salt)
     }
 
-    user.first_name = req.body.first_name
-    user.last_name = req.body.last_name
+    user.name = req.body.name
     user.email = req.body.email
 
     try {
@@ -30,48 +29,40 @@ module.exports.current = async (params, req, res) => {
         return res.status(422).send(err)
     }
 
-}
+})
 
 /**
  * Sign in
  */
-module.exports.signin = async (params, req, res) => {
+server.put('/users/signin', async (req, res) => {
     try {
-        const user = await UsersModel.getByEmailAndAccess({
-            email: req.body.email,
-                // Do NOT allow admin users. Let's keep them separate.
-            access: 'user'
-            })
-        if (!user || !user.passwordMatches(req.body.password))
-            return res.status(422).send({'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
+        const user = await UsersModel.getByEmailAndPassword(req.body.email, req.body.password)
+        res.send({ token: UsersModel.token(user) })
     } catch(err) {
-        return res.status(422).send({'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
+        res.status(422).send({'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
     }
-}
+})
 
 /**
  * Sign up
  */
-module.exports.signup = async (params, req, res) => {
+server.post('/users/signup', async (req, res) => {
     try {
-        
         const response = await UsersModel.insert(req.body.name, req.body.email, req.body.password)
-        const user = await UserModel.getById(response.id)
-        console.log('@@@/users/signup', req.body)
-        res.send({ token: user[0].token() })
+        const user = await UsersModel.getById(response.id || response.insertId)
+        res.send({ token: UsersModel.token(user) })
     } catch(err) {
-
         return res.status(422).send({'err': err, 'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
     }
 
-}
+})
 
 /**
  * Forgot
  */
-module.exports.forgot = async (params, req, res) => {
+server.post('/users/forgot', async (req, res) => {
     var User = mongoose.model('User'),
-        mail = require(config.base + 'server/lib/mailer')(server),
+        mail = require('@app/lib/mailer'),
         message = {}
 
     User.findOne({
@@ -114,7 +105,7 @@ module.exports.forgot = async (params, req, res) => {
 /**
  * Reset
  */
-module.exports.reset = async (params, req, res) => {
+server.post('/users/reset', async (req, res) => {
     var User = mongoose.model('User')
 
     User.findOne({
@@ -139,4 +130,4 @@ module.exports.reset = async (params, req, res) => {
         })
 
     })
-}
+})

@@ -3,10 +3,22 @@ const expect = require('expect')
 const util = require('@app/lib/test/util')
 
 
-describe('Queries', function() {
+describe('Queries', () => {
 
     describe('greetings', () => {
         let url = util.buildUrl('query')
+        
+        it('set token', (done) => {
+            axios.put(util.buildUrl('users/signin'), {
+                email: 'master@dude.com',
+                password: 'password123'  
+            }).then((response) => {
+                axios.defaults.headers.common = {Authorization: `Bearer ${response.data.token}`}
+                done()
+            }).catch(error => {
+                done(error)
+            })
+        })
 
         it('insert greetings', (done) => {
             axios.post(url, {

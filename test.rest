@@ -1,8 +1,13 @@
-POST http://localhost:8081/query
+POST http://127.0.0.1:8081/query
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXN0ZXJAZHVkZS5jb20iLCJhY2Nlc3MiOlsidXNlciJdLCJpYXQiOjE1NzYzMDAyNTEsImV4cCI6MTU3NjMxODI1MX0.ZeXYY6QPmDUGzyPsK5g1xUYaDi4q4ZPZHLRfhJgf5as
 
 {
-    "queries" : [
-        {"name": "greetings.select" }
-    ]
+    "queries" : [{
+        "name": "greetings.select.all",
+        "params": {
+            "#select": "*",
+            "$limit": 2
+        }
+    }]
 }

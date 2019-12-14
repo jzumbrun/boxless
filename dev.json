@@ -5,10 +5,8 @@
       "node_args"          : ["--inspect=0.0.0.0:5858"],
       "exec_mode"          : "fork",
       "max_memory_restart" : "100M",
-      "watch"              : ["server"],
-      "watch_options"      : { "usePolling": true },
-      "out_file"           : "/var/www/paramly/logs/server.log",
-      "error_file"         : "/var/www/paramly/logs/server.log",
+      "out_file"           : "/var/www/app/logs/server.log",
+      "error_file"         : "/var/www/app/logs/server.log",
       "log_date_format"    : "YYYY-MM-DD"
     }]
   }

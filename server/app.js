@@ -4,8 +4,7 @@ const config = require('./config'),
     parser = require('body-parser'),
     compression = require('compression'),
     jwt = require('express-jwt'),
-    express = require('express'),
-    server = express(),
+    server = require('@app/lib/server'),
     controllers = require('@app/lib/controllers')
 
 /**
@@ -54,7 +53,7 @@ class App {
         server.use(compression())
         server.use(parser.json())
         server.use(parser.urlencoded({ extended: true }))
-
+        
         // We are going to protect routes with JWT
         server.use(jwt({
             secret: config.secret
@@ -63,7 +62,7 @@ class App {
         }))
 
         // Load the controllers
-        controllers.load(server)
+        controllers.load()
 
         // Error handlers
         this.errors()

@@ -1,0 +1,14 @@
+[
+    "trigger",
+    "./",
+    {
+      "name": "rebuild",
+      "expression": [
+        "anyof",
+        ["dirname", "server/lib"],
+        ["dirname", "server/routes"],
+        ["name", ["server/app.js", "server/config.js"]]
+      ],
+      "command": ["make", "server/watch"]
+    }
+  ]

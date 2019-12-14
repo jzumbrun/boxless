@@ -1,4 +1,7 @@
 require('module-alias/register')
+const seeder = require('@app/lib/test/seeder')
 
-process.removeAllListeners('SIGINT');
+seeder.seed()
+process.removeAllListeners('SIGINT')
+
 module.exports = {}
