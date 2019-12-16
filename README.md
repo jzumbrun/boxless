@@ -1,4 +1,4 @@
-# paramly
+# sqlstache
 
-paramly.com
+sqlstache.com
 

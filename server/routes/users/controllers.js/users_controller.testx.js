@@ -12,7 +12,7 @@ describe('Users', function() {
             axios.post(url, {
                 queries: [{
                     name: 'core.users.signup',
-                    params: 
+                    properties: 
                 }]
             }).then(response => {
                 expect(response.status).toEqual(200)

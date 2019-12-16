@@ -86,7 +86,7 @@ class UsersModel extends Model{
             id: user.id,
             email: user.email,
             access: JSON.parse(user.access)
-        }, config.secret, { expiresIn: '5h' })
+        }, config.secret, { expiresIn: '24h' })
     }
 }
 

@@ -7,12 +7,12 @@ config.defaults = {
     db: {
         connectionLimit : 50,
         host     : 'db',
-        user     : 'paramly',
-        password : '#!paramly321321',
-        database : 'paramly'
+        user     : 'sqlstache',
+        password : '#!sqlstache321321',
+        database : 'sqlstache'
     },
 
-    secret: '4Rf3FvgtRgYg60KjM',
+    secret: '4Rf3FFgtRgFg60KPM',
 
     open_paths: [
         '/',

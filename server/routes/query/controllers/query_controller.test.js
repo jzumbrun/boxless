@@ -24,13 +24,13 @@ describe('Queries', () => {
             axios.post(url, {
                 queries: [{
                     name: 'greetings.insert',
-                    params: {
+                    properties: {
                         '$description': 'kind',
                         '$words': 'hello'
                     }
                 },{
                     name: 'greetings.insert',
-                    params: {
+                    properties: {
                         '$description': 'cool',
                         '$words': 'yo'
                     }
@@ -73,7 +73,7 @@ describe('Queries', () => {
             axios.post(url, {
                 queries: [{
                     name: 'greetings.select',
-                    params: {
+                    properties: {
                         '#select': '*',
                         '$description': 'kind',
                         '$limit': 1
@@ -95,13 +95,13 @@ describe('Queries', () => {
             axios.post(url, {
                 queries: [{
                     name: 'greetings.update',
-                    params: {
+                    properties: {
                         '$id': 1,
                         '$description': 'nice',
                     }
                 },{
                     name: 'greetings.update',
-                    params: {
+                    properties: {
                         '$id': 2,
                         '$description': 'chill',
                     }
@@ -145,7 +145,7 @@ describe('Queries', () => {
             axios.post(url, {
                 queries: [{
                     name: 'greetings.select.all',
-                    params: {
+                    properties: {
                         '#select': '*',
                         '$limit': 2
                     }
@@ -165,7 +165,7 @@ describe('Queries', () => {
             axios.post(url, {
                 queries: [{
                     name: 'greetings.delete',
-                    params: {
+                    properties: {
                         '$id': 2,
                     }
                 }]
@@ -194,7 +194,7 @@ describe('Queries', () => {
             axios.post(url, {
                 queries: [{
                     name: 'greetings.select.all',
-                    params: {
+                    properties: {
                         '#select': '*',
                         '$limit': 2
                     }

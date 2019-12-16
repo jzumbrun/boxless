@@ -20,9 +20,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: b33pb00p
-      MYSQL_DATABASE: paramly
-      MYSQL_USER: paramly
-      MYSQL_PASSWORD: "#!paramly321321"
+      MYSQL_DATABASE: sqlstache
+      MYSQL_USER: sqlstache
+      MYSQL_PASSWORD: "#!sqlstache321321"
     volumes:
       - ./data:/data/db
     ports:

@@ -1,29 +1,30 @@
+const _ = require('lodash')
+const hbs = require('handlebars')
 const Model = require('@app/lib/model')
 
 class QueryModel extends Model {
 
+    constructor() {
+        super()
+        for(const fn in _) {
+            hbs.registerHelper(`_${fn}`, function(a, b, c) {
+                return fn(a, b, c)
+            })
+        }
+    }
+
     /**
      * Query
      * @param {string} query 
-     * @param {object} params 
+     * @param {object} properties 
      * @param {User} user 
      * @return Promise
      */
-    query(query, params = {}, user = {}) {
-
-        // Replace with string values
-        query = query.replace(/\/\*(\$\w+)\*\//g, (text, key) => {
-            return params[key] ? this.escape(params[key]) : text
-        // Replace with field ids
-        }).replace(/\/\*(#\w+)\*\//g, (text, key) => {
-            return params[key] ? this.escapeId(params[key]) : text
-        // Replace with authorized values
-        }).replace(/\/\*(@\w+)\*\//g, (text, key) => {
-            return user[key] ? this.escape(user[key]) : text
-        })
-
+    query(query, properties = {}, user = {}) {
+        query = hbs.compile(query)({...properties, user})
         return super.query(query)
     }
+
 }
 
 module.exports = new QueryModel()

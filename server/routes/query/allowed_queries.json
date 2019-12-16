@@ -16,8 +16,23 @@
     },
     {
         "name": "greetings.select.all",
-        "expression": "SELECT /*#select*/ FROM greetings",
-        "access": ["user"]
+        "expression": "SELECT {{select}} FROM greetings WHERE user_id={{user.id}} LIMIT {{limit}}",
+        "access": ["user"],
+        "schema": {
+            "type": "object",
+            "properties": {
+                "select": {
+                    "type": "array",
+                    "default": ["*"]
+                },
+                "limit": {
+                    "type": "number",
+                    "maximum": 200,
+                    "default": 1
+                }
+            },
+            "additionalProperties": false
+        }
     },
     {
         "name": "greetings.insert",
@@ -28,5 +43,22 @@
         "name": "greetings.update",
         "expression": "UPDATE greetings SET description=/*$description*/ WHERE id=/*$id*/",
         "access": ["user"]
+    },
+    {
+        "name": "users.current",
+        "expression": "SELECT {{select}} FROM users WHERE id={{user.id}} LIMIT 1",
+        "access": ["user"],
+        "schema": {
+            "type": "object",
+            "properties": {
+                "select": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [ {"enum": ["id", "name", "email"]} ]
+                    }
+                }
+            },
+            "additionalProperties": false
+        }
     }
 ]

@@ -1,13 +1,17 @@
 POST http://127.0.0.1:8081/query
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXN0ZXJAZHVkZS5jb20iLCJhY2Nlc3MiOlsidXNlciJdLCJpYXQiOjE1NzYzMDAyNTEsImV4cCI6MTU3NjMxODI1MX0.ZeXYY6QPmDUGzyPsK5g1xUYaDi4q4ZPZHLRfhJgf5as
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXN0ZXJAZHVkZS5jb20iLCJhY2Nlc3MiOlsidXNlciJdLCJpYXQiOjE1NzY0NjEwMDUsImV4cCI6MTY0MzU5MzgwNX0.kbAKkmX2rINhkaOaobqIPf2CknepTkh0l_Y_kchRaXs
 
 {
     "queries" : [{
-        "name": "greetings.select.all",
-        "params": {
-            "#select": "*",
-            "$limit": 2
-        }
+        "name": "greetings.select.all"
     }]
 }
+
+# PUT http://127.0.0.1:8081/users/signin
+# content-type: application/json
+
+# {
+#     "email": "master@dude.com",
+#     "password": "password123"
+# }

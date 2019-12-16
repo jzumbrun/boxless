@@ -2,7 +2,7 @@ DOCKERCOMMAND := docker exec app bash -c
 
 help:
 	@echo ""
-	@echo "Welcome to paramly's build command center"
+	@echo "Welcome to sqlstache's build command center"
 	@echo "----------------------------------------"
 	@echo ""
 	@echo "help                       Show this list."
@@ -49,7 +49,7 @@ stop:
 	-@watchman shutdown-server
 
 watch:
-	-@watchman --logfile ~/Projects/paramly/logs/watchman.log watch-project .
+	-@watchman --logfile ~/Projects/sqlstache/logs/watchman.log watch-project .
 	-@watchman -j < watchman.json
 
 # This is to only be used by docker
@@ -81,7 +81,7 @@ server/start: docker/start server/restart
 
 server/watch:
 	@echo 'Wathman is restarting express server...'
-	@docker exec app bash -c "cd /var/www/app && pm2 restart paramly"
+	@docker exec app bash -c "cd /var/www/app && pm2 restart sqlstache"
 
 server/stop: docker/stop server/clear
 	@echo 'Stopped dev server and related services.'
