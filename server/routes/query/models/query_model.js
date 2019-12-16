@@ -7,8 +7,8 @@ class QueryModel extends Model {
     constructor() {
         super()
         for(const fn in _) {
-            hbs.registerHelper(`_${fn}`, function(a, b, c) {
-                return fn(a, b, c)
+            hbs.registerHelper(`_${fn}`, function(...args) {
+                return _[fn](...args)
             })
         }
     }

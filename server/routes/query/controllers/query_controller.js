@@ -74,25 +74,27 @@ function validateQuery(query = {}, ajv) {
 server.post('/query', async (req, res) => {
 
     var response = {queries: []}
-        allowed_queries = require('../allowed_queries'),
+        defined_queries = require('../defined_queries'),
         ajv = new Ajv({ useDefaults: true })
 
     try {
 
         req.body.queries = req.body.queries || []
         for(const request of req.body.queries) {
+            // Do we have proper request schema?
             if(!validateRequest(request, ajv)){
                 response.queries.push({name: request.name, error: {'errno': 1000, 'code': 'ERROR_REQUEST_VALIDATION', details: ajv.errors}})
                 continue
             }
 
-            let query = allowed_queries.find(q => q.name == request.name)
+            // Do we have proper definition query schema?
+            let query = defined_queries.find(q => q.name == request.name)
             if(!validateQuery(query, ajv)){
                 response.queries.push({name: request.name, error: {'errno': 1001, 'code': 'ERROR_QUERY_DEFINITION_VALIDATION', details: ajv.errors}})
                 continue
             }
 
-            // Do we have sql ?
+            // Do we have sql?
             if(!query){
                 response.queries.push({name: request.name, error: {'errno': 1002, 'code': 'ERROR_QUERY_NOT_FOUND'} })
                 continue
@@ -105,28 +107,39 @@ server.post('/query', async (req, res) => {
             }
             
             try {
+                // Do we have proper request query schema?
                 if(!ajv.validate(query.schema, request.properties))
-                    response.queries.push({name: request.name, error: {'errno': 1004, 'code': 'ERROR_QUERY_PROPERTIES_VALIDATION', details: ajv.errors}})
+                    response.queries.push({name: request.name, error: {'errno': 1004, 'code': 'ERROR_QUERY_REQUEST_VALIDATION', details: ajv.errors}})
                 else {
                     let rows = await QueryModel.query(query.expression, request.properties, req.user)
                     response.queries.push({name: request.name, results: rows })
                 }
                 
             } catch(error) {
+                // Do we have good sql statements?
+                let err = { name: request.name, error: {'errno': 1005, 'code': 'ERROR_IMPROPER_QUERY_STATEMENT'}}
                 if(config.env == 'production')
-                    response.queries.push({ name: request.name, error: {'errno': 1005, 'code': 'ERROR_BAD_QUERY'}})
-                else
-                    response.queries.push({ name: request.name, error: {'errno': 1005, 'code': 'ERROR_BAD_QUERY', details: ajv.errors}})
+                    response.queries.push(err)
+                else {
+                    err.details = error.message
+                    response.queries.push(err)
+                }
+                    
             }
             
         }
         
         res.send(response)
     } catch(error) {
+        // Do we have any uknown issues?
+        let err = {error: {'errno': 1006, 'code': 'ERROR_UNKNOWN'}}
         if(config.env == 'production')
-            res.send({error: {'errno': 1006, 'code': 'ERROR_BAD_QUERY'}})
-        else
-            res.send({error: {'errno': 1006, 'code': 'ERROR_BAD_QUERY', details: error.message}})
+            response.queries.push(err)
+        else {
+            err.details = error.message
+            response.queries.push(err)
+        }
+                    
     } finally {
         QueryModel.release()
     }

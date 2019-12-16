@@ -16,7 +16,7 @@
     },
     {
         "name": "greetings.select.all",
-        "expression": "SELECT {{select}} FROM greetings WHERE user_id={{user.id}} LIMIT {{limit}}",
+        "expression": "SELECT {{select}} FROM greetings WHERE user_id={{user.id}} AND description='{{_trim description}}' LIMIT {{limit}}",
         "access": ["user"],
         "schema": {
             "type": "object",
@@ -24,6 +24,10 @@
                 "select": {
                     "type": "array",
                     "default": ["*"]
+                },
+                "description": {
+                    "type": "string",
+                    "default": ""
                 },
                 "limit": {
                     "type": "number",
