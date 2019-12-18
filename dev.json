@@ -1,6 +1,6 @@
 {
     "apps" : [{
-      "name"               : "sqlstache",
+      "name"               : "supercontainer",
       "script"             : "server/app.js",
       "node_args"          : ["--inspect=0.0.0.0:5858"],
       "exec_mode"          : "fork",

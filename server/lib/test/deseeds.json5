@@ -1,0 +1,10 @@
+[
+  {
+    "name": "greetings.truncate",
+    "expression": "TRUNCATE TABLE greetings"
+  },
+  {
+    "name": "users.truncate",
+    "expression": "TRUNCATE TABLE users"
+  }
+]

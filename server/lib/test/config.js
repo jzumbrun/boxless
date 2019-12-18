@@ -1,7 +1,7 @@
 require('module-alias/register')
-const seeder = require('@app/lib/test/seeder')
+require('json5/lib/register')
 
-seeder.seed()
 process.removeAllListeners('SIGINT')
+process.env.NODE_ENV = 'testing'
 
 module.exports = {}

@@ -7,9 +7,9 @@ config.defaults = {
     db: {
         connectionLimit : 50,
         host     : 'db',
-        user     : 'sqlstache',
-        password : '#!sqlstache321321',
-        database : 'sqlstache'
+        user     : 'supercontainer',
+        password : '#!supercontainer321321',
+        database : 'supercontainer'
     },
 
     secret: '4Rf3FFgtRgFg60KPM',
@@ -30,20 +30,15 @@ config.development = {
 
 /** TESTING **/
 config.testing = {
-
     db: {
-        host: 'localhost',
-        database: 'test'
-    }
+        host     : 'db',
+        database : 'test'
+    },
 }
 
 /** STAGING **/
 config.staging = {
 
-    db: {
-        host: 'localhost',
-        database: 'test'
-    }
 }
 
 /** PRODUCTION **/
@@ -51,4 +46,4 @@ config.production = {
 }
 
 /* !!! DONT CHANGE THIS LINE !!! */
-module.exports = (new function(){config.defaults.env=require('./.env');return require('lodash').merge(config.defaults,config[config.defaults.env])}())
+module.exports = (new function(){config.defaults.env=process.env.NODE_ENV||require('./.env');return require('lodash').merge(config.defaults,config[config.defaults.env])}())

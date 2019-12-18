@@ -1,8 +1,10 @@
-DOCKERCOMMAND := docker exec app bash -c
+DOCKERCOMMANDAPP := docker exec app bash -c
+DOCKERCOMMANDMYSQL := docker exec mysql bash -c
+
 
 help:
 	@echo ""
-	@echo "Welcome to sqlstache's build command center"
+	@echo "Welcome to supercontainer's build command center"
 	@echo "----------------------------------------"
 	@echo ""
 	@echo "help                       Show this list."
@@ -38,6 +40,11 @@ help:
 start: watch
 	@echo 'Starting docker...'
 	@docker-compose up -d
+	@${DOCKERCOMMANDAPP} "cd ./server && npm ci"
+	@${DOCKERCOMMANDAPP} "npm install -g pm2 && npm install -g mocha"
+	@${DOCKERCOMMANDAPP} "pm2 start dev.json"
+	@${DOCKERCOMMANDMYSQL} "mysql -uroot -p'b33pb00p' -e 'CREATE DATABASE test;'"
+	@${DOCKERCOMMANDMYSQL} "mysql -uroot -p'b33pb00p' -e 'GRANT ALL PRIVILEGES ON test.* TO \"supercontainer\"@\"%\";'"
 
 restart:
 	@echo 'Starting docker...'
@@ -49,17 +56,11 @@ stop:
 	-@watchman shutdown-server
 
 watch:
-	-@watchman --logfile ~/Projects/sqlstache/logs/watchman.log watch-project .
+	-@watchman --logfile ~/Projects/supercontainer/logs/watchman.log watch-project .
 	-@watchman -j < watchman.json
 
-# This is to only be used by docker
-docker-compose/build:
-	@cd ./server && npm ci
-	@pm2 start dev.json
-	@tail -f /dev/null
-
 docker/shell:
-	@${DOCKERCOMMAND} "/bin/bash"
+	@${DOCKERCOMMANDAPP} "/bin/bash"
 
 logs/clear:
 	@echo 'Clearing all logs...'
@@ -67,24 +68,24 @@ logs/clear:
 	@echo > ./logs/watchman.log
 
 server/status:
-	@${DOCKERCOMMAND} "pm2 status"
+	@${DOCKERCOMMANDAPP} "pm2 status"
 
 server/logs:
-	@${DOCKERCOMMAND} "pm2 log"
+	@${DOCKERCOMMANDAPP} "pm2 log"
 
 server/restart:
 	@echo 'Starting/Restarting express server...'
-	@${DOCKERCOMMAND} "cd /var/www/app && pm2 start dev.json"
+	@${DOCKERCOMMANDAPP} "cd /var/www/app && pm2 start dev.json"
 
 server/start: docker/start server/restart
 	@echo 'Dev server started. Visit localhost:8081'
 
 server/watch:
 	@echo 'Wathman is restarting express server...'
-	@docker exec app bash -c "cd /var/www/app && pm2 restart sqlstache"
+	@docker exec app bash -c "cd /var/www/app && pm2 restart supercontainer"
 
 server/stop: docker/stop server/clear
 	@echo 'Stopped dev server and related services.'
 
 test/all:
-	@${DOCKERCOMMAND} "cd /var/www/app && mocha ./server/routes/**/*.test.js --config ./server/lib/test/config.js"
+	@${DOCKERCOMMANDAPP} "cd /var/www/app && mocha ./server/routes/**/*.test.js --exit --config ./server/lib/test/config.js"

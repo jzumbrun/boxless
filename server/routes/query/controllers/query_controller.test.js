@@ -1,7 +1,20 @@
 const axios = require('axios')
 const expect = require('expect')
 const util = require('@app/lib/test/util')
+const seeder = require('@app/lib/test/seeder')
 
+
+describe('Seed', () => {
+    it('seeding...', (done) => {
+        seeder.seed()
+        .then(() => {
+            done()
+        }).catch(error => {
+            done(error)
+        })
+
+    })
+})
 
 describe('Queries', () => {
 
@@ -25,14 +38,14 @@ describe('Queries', () => {
                 queries: [{
                     name: 'greetings.insert',
                     properties: {
-                        '$description': 'kind',
-                        '$words': 'hello'
+                        'description': 'kind',
+                        'words': 'hello'
                     }
                 },{
                     name: 'greetings.insert',
                     properties: {
-                        '$description': 'cool',
-                        '$words': 'yo'
+                        'description': 'cool',
+                        'words': 'yo'
                     }
                 }]
             }).then(response => {
@@ -72,18 +85,17 @@ describe('Queries', () => {
         it('greetings.select.after.insert', (done) => {
             axios.post(url, {
                 queries: [{
-                    name: 'greetings.select',
+                    name: 'greetings.select.byDescription',
                     properties: {
-                        '#select': '*',
-                        '$description': 'kind',
-                        '$limit': 1
+                        'description': 'kind',
+                        'limit': 1
                     }
                 }]
             }).then(response => {
                 expect(response.status).toEqual(200)
                 expect(response.data.queries).toEqual([{
-                    name: 'greetings.select',
-                    results: [ { id: 1, description: 'kind', words: 'hello' } ]
+                    name: 'greetings.select.byDescription',
+                    results: [ { id: 1, description: 'kind', words: 'hello', user_id: 1 } ]
                 }])
                 done()
             }).catch(error => {
@@ -96,14 +108,14 @@ describe('Queries', () => {
                 queries: [{
                     name: 'greetings.update',
                     properties: {
-                        '$id': 1,
-                        '$description': 'nice',
+                        'id': 1,
+                        'description': 'nice',
                     }
                 },{
                     name: 'greetings.update',
                     properties: {
-                        '$id': 2,
-                        '$description': 'chill',
+                        'id': 2,
+                        'description': 'chill',
                     }
                 }]
             }).then(response => {
@@ -144,17 +156,17 @@ describe('Queries', () => {
         it('greetings.select.after.update', (done) => {
             axios.post(url, {
                 queries: [{
-                    name: 'greetings.select.all',
+                    name: 'greetings.select',
                     properties: {
-                        '#select': '*',
-                        '$limit': 2
+                        'select': ["description", "words"],
+                        'limit': 2
                     }
                 }]
             }).then(response => {
                 expect(response.status).toEqual(200)
                 expect(response.data.queries).toEqual([{
-                    name: 'greetings.select.all',
-                    results: [ { id: 1, description: 'nice', words: 'hello' }, { id: 2, description: 'chill', words: 'yo' } ] }])
+                    name: 'greetings.select',
+                    results: [ { description: 'nice', words: 'hello' }, { description: 'chill', words: 'yo' } ] }])
                 done()
             }).catch(error => {
                 done(error)
@@ -166,7 +178,7 @@ describe('Queries', () => {
                 queries: [{
                     name: 'greetings.delete',
                     properties: {
-                        '$id': 2,
+                        'id': 2,
                     }
                 }]
             }).then(response => {
@@ -193,16 +205,16 @@ describe('Queries', () => {
         it('greetings.select.after.delete', (done) => {
             axios.post(url, {
                 queries: [{
-                    name: 'greetings.select.all',
+                    name: 'greetings.select',
                     properties: {
-                        '#select': '*',
-                        '$limit': 2
+                        'select': ["id", "description", "words"],
+                        'limit': 2
                     }
                 }]
             }).then(response => {
                 expect(response.status).toEqual(200)
                 expect(response.data.queries).toEqual([{
-                    name: 'greetings.select.all',
+                    name: 'greetings.select',
                     results: [ { id: 1, description: 'nice', words: 'hello' } ] } ])
                 done()
             }).catch(error => {
@@ -210,30 +222,16 @@ describe('Queries', () => {
             })
         })
 
-        it('truncate greetings', (done) => {
-            axios.post(url, {
-                queries: [{
-                    name: 'greetings.truncate'
-                }]
-            }).then(response => {
-                expect(response.status).toEqual(200)
-                expect(response.data.queries).toEqual([{
-                    name: 'greetings.truncate',
-                    results: {
-                        fieldCount: 0,
-                        affectedRows: 0,
-                        insertId: 0,
-                        serverStatus: 2,
-                        warningCount: 0,
-                        message: '',
-                        protocol41: true,
-                        changedRows: 0
-                      }
-                }])
-                done()
-            }).catch(error => {
-                done(error)
-            })
+    })
+})
+
+describe('Deseed', () => {
+    it('deseeding...', (done) => {
+        seeder.deseed()
+        .then(() => {
+            done()
+        }).catch(error => {
+            done(error)
         })
 
     })

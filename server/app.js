@@ -1,9 +1,10 @@
 require('module-alias/register')
+require('json5/lib/register')
 
-const config = require('./config'),
-    parser = require('body-parser'),
+const parser = require('body-parser'),
     compression = require('compression'),
     jwt = require('express-jwt'),
+    config = require('@app/config'),
     server = require('@app/lib/server'),
     controllers = require('@app/lib/controllers')
 

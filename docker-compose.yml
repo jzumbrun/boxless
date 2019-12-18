@@ -4,7 +4,7 @@ services:
     container_name: app
     restart: always
     build: .
-    command: make docker-compose/build
+    command: tail -f /dev/null
     volumes:
       - .:/var/www/app
     depends_on:
@@ -20,9 +20,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: b33pb00p
-      MYSQL_DATABASE: sqlstache
-      MYSQL_USER: sqlstache
-      MYSQL_PASSWORD: "#!sqlstache321321"
+      MYSQL_DATABASE: supercontainer
+      MYSQL_USER: supercontainer
+      MYSQL_PASSWORD: "#!supercontainer321321"
     volumes:
       - ./data:/data/db
     ports:

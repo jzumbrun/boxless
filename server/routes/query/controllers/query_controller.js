@@ -3,6 +3,7 @@ const intersection = require('lodash/intersection')
 const config = require('@app/config')
 const QueryModel = require('@app/routes/query/models/query_model')
 const server = require('@app/lib/server')
+const defined_queries = require('@app/routes/query/defined_queries.json5')
 
 
 /**
@@ -13,19 +14,19 @@ const server = require('@app/lib/server')
 function validateRequest(request = {}, ajv) {
 
     return ajv.validate({
-        "type": "object",
-        "properties": {
-            "name": {
-                "type": "string",
-                "default": "ERROR_MISSING_NAME"
+        'type': 'object',
+        'properties': {
+            'name': {
+                'type': 'string',
+                'default': 'ERROR_MISSING_NAME'
             },
-            "properties": {
-                "type": "object",
-                "default": {}
+            'properties': {
+                'type': 'object',
+                'default': {}
             }
         },
-        "additionalProperties": false,
-        "required": ["name"]
+        'additionalProperties': false,
+        'required': ['name']
     }, request)
     
 }
@@ -39,31 +40,31 @@ function validateRequest(request = {}, ajv) {
 function validateQuery(query = {}, ajv) {
 
     return ajv.validate({
-        "type": "object",
-        "properties": {
-            "name": {
-                "type": "string",
-                "default": "ERROR_MISSING_NAME"
+        'type': 'object',
+        'properties': {
+            'name': {
+                'type': 'string',
+                'default': 'ERROR_MISSING_NAME'
             },
-            "expression": {
-                "type": "string",
-                "default": "ERROR_MISSING_EXPRESSION"
+            'expression': {
+                'type': 'string',
+                'default': 'ERROR_MISSING_EXPRESSION'
             },
-            "properties": {
-                "type": "object",
-                "default": {}
+            'properties': {
+                'type': 'object',
+                'default': {}
             },
-            "schema": {
-                "type": "object",
-                "default": {}
+            'schema': {
+                'type': 'object',
+                'default': {}
             },
-            "access": {
-                "type": "array",
-                "default": []
+            'access': {
+                'type': 'array',
+                'default': []
             }
         },
-        "additionalProperties": false,
-        "required": ["name", "expression"]
+        'additionalProperties': false,
+        'required': ['name', 'expression']
     }, query)
 }
 
@@ -73,8 +74,7 @@ function validateQuery(query = {}, ajv) {
  */
 server.post('/query', async (req, res) => {
 
-    var response = {queries: []}
-        defined_queries = require('../defined_queries'),
+    var response = {queries: []},
         ajv = new Ajv({ useDefaults: true })
 
     try {

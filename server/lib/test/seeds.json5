@@ -1,15 +1,15 @@
 [
   {
-      "name": "greetings.dropifexists",
-      "expression": "DROP TABLE IF EXISTS greetings;"
+    "name": "greetings.dropifexists",
+    "expression": "DROP TABLE IF EXISTS greetings"
   },
   {
     "name": "greetings.create",
-    "expression": "CREATE TABLE greetings (id int(11) unsigned NOT NULL AUTO_INCREMENT, description varchar(100) DEFAULT NULL, words varchar(100) DEFAULT NULL, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+    "expression": "CREATE TABLE greetings (id int(11) unsigned NOT NULL AUTO_INCREMENT, description varchar(100) DEFAULT NULL, words varchar(100) DEFAULT NULL, PRIMARY KEY (id), user_id int(11) unsigned DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8"
   },
   {
     "name": "users.dropifexists",
-    "expression": "DROP TABLE IF EXISTS users;"
+    "expression": "DROP TABLE IF EXISTS users"
   },
   {
     "name": "users.create",
