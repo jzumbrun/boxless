@@ -9,11 +9,11 @@ const defined_queries = require('@app/routes/query/defined_queries.json5')
 /**
  * Validate Request
  * @param {object} request 
- * @param {Ajv} ajv 
+ * @param {Ajv} inboundAjv 
  */
-function validateRequest(request = {}, ajv) {
+function validateRequest(request = {}, inboundAjv) {
 
-    return ajv.validate({
+    return inboundAjv.validate({
         'type': 'object',
         'properties': {
             'name': {
@@ -35,11 +35,11 @@ function validateRequest(request = {}, ajv) {
 /**
  * Validate Query
  * @param {object} query 
- * @param {Ajv} ajv 
+ * @param {Ajv} inboundAjv 
  */
-function validateQuery(query = {}, ajv) {
+function validateQuery(query = {}, inboundAjv) {
 
-    return ajv.validate({
+    return inboundAjv.validate({
         'type': 'object',
         'properties': {
             'name': {
@@ -54,7 +54,11 @@ function validateQuery(query = {}, ajv) {
                 'type': 'object',
                 'default': {}
             },
-            'schema': {
+            'inboundSchema': {
+                'type': 'object',
+                'default': {}
+            },
+            'outboundSchema': {
                 'type': 'object',
                 'default': {}
             },
@@ -75,22 +79,23 @@ function validateQuery(query = {}, ajv) {
 server.post('/query', async (req, res) => {
 
     var response = {queries: []},
-        ajv = new Ajv({ useDefaults: true })
+        inboundAjv = new Ajv({ useDefaults: true }),
+        outboundAjv = new Ajv({ useDefaults: true, removeAdditional: 'all' })
 
     try {
 
         req.body.queries = req.body.queries || []
         for(const request of req.body.queries) {
             // Do we have proper request schema?
-            if(!validateRequest(request, ajv)){
-                response.queries.push({name: request.name, error: {'errno': 1000, 'code': 'ERROR_REQUEST_VALIDATION', details: ajv.errors}})
+            if(!validateRequest(request, inboundAjv)){
+                response.queries.push({name: request.name, error: {'errno': 1000, 'code': 'ERROR_REQUEST_VALIDATION', details: inboundAjv.errors}})
                 continue
             }
 
             // Do we have proper definition query schema?
             let query = defined_queries.find(q => q.name == request.name)
-            if(!validateQuery(query, ajv)){
-                response.queries.push({name: request.name, error: {'errno': 1001, 'code': 'ERROR_QUERY_DEFINITION_VALIDATION', details: ajv.errors}})
+            if(!validateQuery(query, inboundAjv)){
+                response.queries.push({name: request.name, error: {'errno': 1001, 'code': 'ERROR_QUERY_DEFINITION_VALIDATION', details: inboundAjv.errors}})
                 continue
             }
 
@@ -107,17 +112,22 @@ server.post('/query', async (req, res) => {
             }
             
             try {
-                // Do we have proper request query schema?
-                if(!ajv.validate(query.schema, request.properties))
-                    response.queries.push({name: request.name, error: {'errno': 1004, 'code': 'ERROR_QUERY_REQUEST_VALIDATION', details: ajv.errors}})
+                // Do we have proper inbound query schema?
+                if(!inboundAjv.validate(query.inboundSchema, request.properties))
+                    response.queries.push({name: request.name, error: {'errno': 1004, 'code': 'ERROR_QUERY_INBOUND_VALIDATION', details: inboundAjv.errors}})
                 else {
+                    // Do we have proper outbound query schema
                     let rows = await QueryModel.query(query.expression, request.properties, req.user)
-                    response.queries.push({name: request.name, results: rows })
+                    if(!outboundAjv.validate(query.outboundSchema, rows)){
+                        response.queries.push({name: request.name, error: {'errno': 1005, 'code': 'ERROR_QUERY_OUTBOUND_VALIDATION', details: outboundAjv.errors}})
+                    }
+                    else 
+                        response.queries.push({name: request.name, results: rows })
                 }
                 
             } catch(error) {
                 // Do we have good sql statements?
-                let err = { name: request.name, error: {'errno': 1005, 'code': 'ERROR_IMPROPER_QUERY_STATEMENT'}}
+                let err = { name: request.name, error: {'errno': 1006, 'code': 'ERROR_IMPROPER_QUERY_STATEMENT'}}
                 if(config.env == 'production')
                     response.queries.push(err)
                 else {
@@ -132,7 +142,7 @@ server.post('/query', async (req, res) => {
         res.send(response)
     } catch(error) {
         // Do we have any uknown issues?
-        let err = {error: {'errno': 1006, 'code': 'ERROR_UNKNOWN'}}
+        let err = {error: {'errno': 1007, 'code': 'ERROR_UNKNOWN'}}
         if(config.env == 'production')
             response.queries.push(err)
         else {

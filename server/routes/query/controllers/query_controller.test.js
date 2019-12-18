@@ -95,7 +95,7 @@ describe('Queries', () => {
                 expect(response.status).toEqual(200)
                 expect(response.data.queries).toEqual([{
                     name: 'greetings.select.byDescription',
-                    results: [ { id: 1, description: 'kind', words: 'hello', user_id: 1 } ]
+                    results: [ { id: 1, description: 'kind', words: 'hello' } ]
                 }])
                 done()
             }).catch(error => {

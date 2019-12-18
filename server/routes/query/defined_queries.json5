@@ -3,7 +3,7 @@
         "name": "greetings.delete",
         "expression": "DELETE FROM greetings WHERE id={{id}} AND user_id={{user.id}}",
         "access": ["user"],
-        "schema": {
+        "inboundSchema": {
             "type": "object",
             "properties": {
                 "id": {
@@ -16,9 +16,15 @@
     },
     {
         "name": "greetings.select.byDescription",
-        "expression": "SELECT {{select}} FROM greetings WHERE user_id={{user.id}} AND description='{{_trim description}}' LIMIT {{limit}}",
+        "expression": "\
+            SELECT {{select}} \
+            FROM greetings \
+            WHERE user_id={{user.id}} \
+            AND description='{{_trim description}}' \
+            LIMIT {{limit}}\
+        ",
         "access": ["user"],
-        "schema": {
+        "inboundSchema": {
             "type": "object",
             "properties": {
                 "select": {
@@ -37,13 +43,24 @@
             },
             "additionalProperties": false,
             "required": ["description"]
+        },
+        "outboundSchema": {
+            "type": "array",
+            "items": { 
+                "type": "object",
+                "properties": {
+                    "id": { "type": "number"},
+                    "description": { "type": "string"},
+                    "words": { "type": "string"}
+                }
+            }
         }
     },
     {
         "name": "greetings.select",
         "expression": "SELECT {{select}} FROM greetings WHERE user_id={{user.id}} LIMIT {{limit}}",
         "access": ["user"],
-        "schema": {
+        "inboundSchema": {
             "type": "object",
             "properties": {
                 "select": {
@@ -63,7 +80,7 @@
         "name": "greetings.insert",
         "expression": "INSERT INTO greetings (description, words, user_id) VALUES ('{{description}}', '{{words}}', {{user.id}})",
         "access": ["user"],
-        "schema": {
+        "inboundSchema": {
             "type": "object",
             "properties": {
                 "description": {
@@ -82,7 +99,7 @@
         "name": "greetings.update",
         "expression": "UPDATE greetings SET description='{{description}}' WHERE id={{id}} AND user_id={{user.id}}",
         "access": ["user"],
-        "schema": {
+        "inboundSchema": {
             "type": "object",
             "properties": {
                 "id": {
@@ -100,7 +117,7 @@
         "name": "users.current",
         "expression": "SELECT {{select}} FROM users WHERE id={{user.id}} LIMIT 1",
         "access": ["user"],
-        "schema": {
+        "inboundSchema": {
             "type": "object",
             "properties": {
                 "select": {

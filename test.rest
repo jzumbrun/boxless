@@ -4,10 +4,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiO
 
 {
     "queries" : [{
-        "name": "greetings.insert",
+        "name": "greetings.select.byDescription",
         "properties": {
-            "description": "kind",
-            "words": "hello"
+            "description": "kind"
         }
     }]
 }

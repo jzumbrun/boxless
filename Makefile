@@ -11,13 +11,6 @@ help:
 	@echo "start                      Start docker."
 	@echo "stop                       Stop docker."
 	@echo ""
-	@echo "docker-compose"
-	@echo "    docker-compose/build   Docker compose build process."
-	@echo ""
-	@echo "docker"
-	@echo "    docker/shell           Docker attach shell to app."
-	@echo "    docker/logs            Docker log app."
-	@echo ""
 	@echo "server"
 	@echo "    server/restart         Restart the dev server."
 	@echo "    server/watch           Watchman restart the dev server."
@@ -59,9 +52,6 @@ watch:
 	-@watchman --logfile ~/Projects/supercontainer/logs/watchman.log watch-project .
 	-@watchman -j < watchman.json
 
-docker/shell:
-	@${DOCKERCOMMANDAPP} "/bin/bash"
-
 logs/clear:
 	@echo 'Clearing all logs...'
 	@echo > ./logs/server.log
@@ -75,17 +65,21 @@ server/logs:
 
 server/restart:
 	@echo 'Starting/Restarting express server...'
-	@${DOCKERCOMMANDAPP} "cd /var/www/app && pm2 start dev.json"
+	@${DOCKERCOMMANDAPP} "pm2 start dev.json"
 
 server/start: docker/start server/restart
 	@echo 'Dev server started. Visit localhost:8081'
 
 server/watch:
 	@echo 'Wathman is restarting express server...'
-	@docker exec app bash -c "cd /var/www/app && pm2 restart supercontainer"
+	@${DOCKERCOMMANDAPP} "pm2 restart supercontainer"
 
 server/stop: docker/stop server/clear
 	@echo 'Stopped dev server and related services.'
+
+server/seed:
+	@echo 'Seeding db with test data...'
+	@${DOCKERCOMMANDAPP} "node ./server/lib/test/seed.js"
 
 test/all:
 	@echo 'Restarting express server in testing env...'
