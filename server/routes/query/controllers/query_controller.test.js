@@ -5,7 +5,7 @@ const seeder = require('@app/lib/test/seeder')
 
 
 describe('Seed', () => {
-    it('seeding...', (done) => {
+    it('seeding', (done) => {
         seeder.seed()
         .then(() => {
             done()
@@ -226,7 +226,7 @@ describe('Queries', () => {
 })
 
 describe('Deseed', () => {
-    it('deseeding...', (done) => {
+    it('deseeding', (done) => {
         seeder.deseed()
         .then(() => {
             done()

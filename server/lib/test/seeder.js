@@ -7,7 +7,6 @@ module.exports.seed = async () => {
     for (query of seeds) {
         try {
             let rows = await QueryModel.query(query.expression)
-            console.log('   ', query.name)
         } catch(error) {
           console.log('   ', query.name, error)
         }
@@ -20,7 +19,6 @@ module.exports.deseed = async () => {
     for (query of deseeds) {
         try {
             let rows = await QueryModel.query(query.expression)
-            console.log('   ', query.name)
         } catch(error) {
           console.log('   ', query.name, error)
         }

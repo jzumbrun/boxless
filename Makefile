@@ -37,7 +37,7 @@ help:
 	@echo "To get started run: make start"
 	@echo ""
 
-start: watch
+start: logs/clear watch
 	@echo 'Starting docker...'
 	@docker-compose up -d
 	@${DOCKERCOMMANDAPP} "cd ./server && npm ci"
@@ -88,4 +88,9 @@ server/stop: docker/stop server/clear
 	@echo 'Stopped dev server and related services.'
 
 test/all:
+	@echo 'Restarting express server in testing env...'
+	@${DOCKERCOMMANDAPP} "NODE_ENV=testing cd /var/www/app && pm2 start dev.json"
 	@${DOCKERCOMMANDAPP} "cd /var/www/app && mocha ./server/routes/**/*.test.js --exit --config ./server/lib/test/config.js"
+	@echo 'Restarting express server in development env...'
+	@${DOCKERCOMMANDAPP} "NODE_ENV=development cd /var/www/app && pm2 start dev.json"
+
