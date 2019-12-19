@@ -26,7 +26,6 @@ function validateRequest(request = {}, inboundAjv) {
             }
         },
         'additionalProperties': false,
-        'required': ['name']
     }, request)
     
 }
@@ -48,7 +47,7 @@ function validateQuery(query = {}, inboundAjv) {
             },
             'expression': {
                 'type': 'string',
-                'default': 'ERROR_MISSING_EXPRESSION'
+                'default': ''
             },
             'properties': {
                 'type': 'object',
@@ -68,7 +67,6 @@ function validateQuery(query = {}, inboundAjv) {
             }
         },
         'additionalProperties': false,
-        'required': ['name', 'expression']
     }, query)
 }
 

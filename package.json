@@ -1,6 +1,6 @@
 {
     "name": "@elseblock/supercontainer",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "MySQL paralell request api, using plain SQL statements built by handlebar templates, validated by json schema.",
     "main": "./server/supercontainer.js",
     "repository": {
@@ -19,7 +19,6 @@
     "dependencies": {
     },
     "peerDependencies": {
-      "react": ">=15.0.0"
     },
     "devDependencies": {}
   }

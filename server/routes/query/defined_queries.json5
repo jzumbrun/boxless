@@ -129,5 +129,9 @@
             },
             "additionalProperties": false
         }
-    }
+    },
+    {
+        "name": "missing.expression",
+        "access": ["user"]
+    },
 ]

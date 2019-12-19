@@ -33,6 +33,83 @@ describe('Queries', () => {
             })
         })
 
+        it('insert bad greetings properties', (done) => {
+            axios.post(url, {
+                queries: [{
+                    name: 'greetings.insert',
+                    properties: {
+                        extra: 'kind'
+                    }
+                }]
+            }).then(response => {
+                expect(response.status).toEqual(200)
+                expect(response.data.queries).toEqual([{
+                    name: 'greetings.insert',
+                    error: {
+                        code: 'ERROR_QUERY_INBOUND_VALIDATION',
+                        details: [
+                        {
+                            dataPath: '',
+                            keyword: 'additionalProperties',
+                            message: 'should NOT have additional properties',
+                            params: {
+                              additionalProperty: 'extra',
+                            },
+                            schemaPath: '#/additionalProperties',
+                          },
+                        ],
+                        errno: 1004
+                      }
+                }])
+                done()
+            }).catch(error => {
+                done(error)
+            })
+        })
+
+        it('insert missing name greetings', (done) => {
+            axios.post(url, {
+                queries: [{
+                    properties: {
+                        description: 'kind'
+                    }
+                }]
+            }).then(response => {
+                expect(response.status).toEqual(200)
+                expect(response.data.queries).toEqual([{
+                    name: 'ERROR_MISSING_NAME',
+                    error: {
+                        code: 'ERROR_QUERY_NOT_FOUND',
+                        errno: 1002
+                      }
+                }])
+                done()
+            }).catch(error => {
+                done(error)
+            })
+        })
+
+        it('insert missing expression in definition', (done) => {
+            axios.post(url, {
+                queries: [{
+                    name: "missing.expression"
+                }]
+            }).then(response => {
+                expect(response.status).toEqual(200)
+                expect(response.data.queries).toEqual([{
+                    name: 'missing.expression',
+                    details: 'ER_EMPTY_QUERY: Query was empty',
+                    error: {
+                        code: 'ERROR_IMPROPER_QUERY_STATEMENT',
+                        errno: 1006
+                      }
+                }])
+                done()
+            }).catch(error => {
+                done(error)
+            })
+        })
+
         it('insert greetings', (done) => {
             axios.post(url, {
                 queries: [{
@@ -158,7 +235,7 @@ describe('Queries', () => {
                 queries: [{
                     name: 'greetings.select',
                     properties: {
-                        'select': ["description", "words"],
+                        'select': ['description', 'words'],
                         'limit': 2
                     }
                 }]
@@ -207,7 +284,7 @@ describe('Queries', () => {
                 queries: [{
                     name: 'greetings.select',
                     properties: {
-                        'select': ["id", "description", "words"],
+                        'select': ['id', 'description', 'words'],
                         'limit': 2
                     }
                 }]
