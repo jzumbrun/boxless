@@ -46,4 +46,4 @@ config.production = {
 }
 
 /* !!! DONT CHANGE THIS LINE !!! */
-module.exports = (new function(){config.defaults.env=process.env.NODE_ENV||require('./.env');return require('lodash').merge(config.defaults,config[config.defaults.env])}())
+module.exports = (new function(){process.env.NODE_ENV=config.defaults.env=process.env.NODE_ENV||require('./.env');return require('lodash').merge(config.defaults,config[config.defaults.env])}())

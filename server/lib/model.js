@@ -36,7 +36,7 @@ class Model {
      * @param {string} sql 
      * @param {object} values 
      */
-    async queryFirst(sql, values = {}) {
+    queryFirst(sql, values = {}) {
         return this.query(sql, values, {first: true})
     }
 
