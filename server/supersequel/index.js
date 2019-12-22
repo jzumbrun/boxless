@@ -14,6 +14,10 @@ function validateRequest(request = {}, inboundAjv) {
     return inboundAjv.validate({
         'type': 'object',
         'properties': {
+            'id': {
+                'type': 'string',
+                'default': ''
+            },
             'name': {
                 'type': 'string',
                 'default': 'ERROR_MISSING_NAME'
@@ -21,6 +25,10 @@ function validateRequest(request = {}, inboundAjv) {
             'properties': {
                 'type': 'object',
                 'default': {}
+            },
+            'sync': {
+                'type': 'boolean',
+                'default': false
             }
         },
         'additionalProperties': false,
@@ -34,7 +42,7 @@ function validateRequest(request = {}, inboundAjv) {
  * @param {object} query 
  * @param {Ajv} inboundAjv 
  */
-function validateQueryDefinition(queryDefinition = {}, inboundAjv) {
+function validateQueryDefinition(definition = {}, inboundAjv) {
 
     return inboundAjv.validate({
         'type': 'object',
@@ -65,8 +73,27 @@ function validateQueryDefinition(queryDefinition = {}, inboundAjv) {
             }
         },
         'additionalProperties': false,
-    }, queryDefinition)
+    }, definition)
 }
+
+/**
+ * Outbound
+ * @param {object} response 
+ * @param {object} request 
+ * @param {array} rows 
+ * @param {object} definition 
+ */
+function outbound(response, request, rows, definition) {
+    const outboundAjv = new Ajv({ useDefaults: true, removeAdditional: 'all' })
+
+    // Do we have proper outbound query schema
+    if(!outboundAjv.validate(definition.outboundSchema, rows)){
+        response.queries.push({...getRequestName(request), error: {'errno': 1005, 'code': 'ERROR_QUERY_OUTBOUND_VALIDATION', details: outboundAjv.errors}})
+    }
+    else
+        response.queries.push({...getRequestName(request), results: rows })
+}
+
 
 /**
  * Query
@@ -75,9 +102,9 @@ function validateQueryDefinition(queryDefinition = {}, inboundAjv) {
  * @param {User} user 
  * @return Promise
  */
-function query(query, querySync, properties = {}, user = {}) {
-    query = hbs.compile(query)({...properties, user})
-    return querySync(query)
+function query(request, definition, config, user = {}) {
+    const expression = hbs.compile(definition.expression)({...request.properties || {}, user})
+    return config.query(expression)
 }
 
 
@@ -95,14 +122,25 @@ function registerHelpers() {
 
 
 /**
+ * Get Request Name
+ * @param {object} request 
+ */
+function getRequestName(request) {
+    if(request.id)
+        return {id: request.id, name: request.name}
+    return {name: request.name}
+}
+
+
+/**
  * Query route
  */
 module.exports.route = async (req, res, config={}) => {
     
-    var response = {queries: []},
-        inboundAjv = new Ajv({ useDefaults: true }),
-        outboundAjv = new Ajv({ useDefaults: true, removeAdditional: 'all' })
-    
+    const response = {queries: []}
+    const inboundAjv = new Ajv({ useDefaults: true })
+    const async = []
+
     config.env = process.env.NODE_ENV || 'development'
         
     try {
@@ -111,48 +149,49 @@ module.exports.route = async (req, res, config={}) => {
 
         req.body.queries = req.body.queries || []
         for(const request of req.body.queries) {
+
+
             // Do we have proper request schema?
             if(!validateRequest(request, inboundAjv)){
-                response.queries.push({name: request.name, error: {'errno': 1000, 'code': 'ERROR_REQUEST_VALIDATION', details: inboundAjv.errors}})
+                response.queries.push({...getRequestName(request), error: {'errno': 1000, 'code': 'ERROR_REQUEST_VALIDATION', details: inboundAjv.errors}})
                 continue
             }
 
             // Do we have proper definition query schema?
-            let queryDefinition = config.queryDefinitions.find(q => q.name == request.name)
-            if(!validateQueryDefinition(queryDefinition, inboundAjv)){
-                response.queries.push({name: request.name, error: {'errno': 1001, 'code': 'ERROR_QUERY_DEFINITION_VALIDATION', details: inboundAjv.errors}})
+            let definition = config.definitions.find(q => q.name == request.name)
+            if(!validateQueryDefinition(definition, inboundAjv)){
+                response.queries.push({...getRequestName(request), error: {'errno': 1001, 'code': 'ERROR_QUERY_DEFINITION_VALIDATION', details: inboundAjv.errors}})
                 continue
             }
 
             // Do we have sql?
-            if(!queryDefinition){
-                response.queries.push({name: request.name, error: {'errno': 1002, 'code': 'ERROR_QUERY_NOT_FOUND'} })
+            if(!definition){
+                response.queries.push({...getRequestName(request), error: {'errno': 1002, 'code': 'ERROR_QUERY_NOT_FOUND'} })
                 continue
             }
 
             // Do we have access rights?
-            if(!intersection(queryDefinition.access, req.user.access).length){
-                response.queries.push({name: request.name, error: {'errno': 1003, 'code': 'ERROR_QUERY_NO_ACCESS'} })
+            if(!intersection(definition.access, req.user.access).length){
+                response.queries.push({...getRequestName(request), error: {'errno': 1003, 'code': 'ERROR_QUERY_NO_ACCESS'} })
                 continue
             }
             
             try {
                 // Do we have proper inbound query schema?
-                if(!inboundAjv.validate(queryDefinition.inboundSchema, request.properties))
-                    response.queries.push({name: request.name, error: {'errno': 1004, 'code': 'ERROR_QUERY_INBOUND_VALIDATION', details: inboundAjv.errors}})
+                if(!inboundAjv.validate(definition.inboundSchema, request.properties))
+                    response.queries.push({...getRequestName(request), error: {'errno': 1004, 'code': 'ERROR_QUERY_INBOUND_VALIDATION', details: inboundAjv.errors}})
                 else {
-                    let rows = await query(queryDefinition.expression, config.querySync, request.properties, req.user)
-                    // Do we have proper outbound query schema
-                    if(!outboundAjv.validate(queryDefinition.outboundSchema, rows)){
-                        response.queries.push({name: request.name, error: {'errno': 1005, 'code': 'ERROR_QUERY_OUTBOUND_VALIDATION', details: outboundAjv.errors}})
-                    }
-                    else 
-                        response.queries.push({name: request.name, results: rows })
+                    let queryPromise = query(request, definition, config, req.user)
+                    .then((rows) => {
+                        outbound(response, request, rows, definition)
+                    })
+                    if(request.sync) await queryPromise
+                    else async.push(queryPromise)
                 }
-                
+                    
             } catch(error) {
                 // Do we have good sql statements?
-                let err = { name: request.name, error: {'errno': 1006, 'code': 'ERROR_IMPROPER_QUERY_STATEMENT'}}
+                let err = {...getRequestName(request), error: {'errno': 1006, 'code': 'ERROR_IMPROPER_QUERY_STATEMENT'}}
                 if(config.env == 'production')
                     response.queries.push(err)
                 else {
@@ -163,7 +202,9 @@ module.exports.route = async (req, res, config={}) => {
             }
             
         }
-        
+
+        if(async.length) await Promise.all((async))
+
         res.send(response)
     } catch(error) {
         // Do we have any uknown issues?
@@ -175,6 +216,6 @@ module.exports.route = async (req, res, config={}) => {
             response.queries.push(err)
         }            
     } finally {
-        config.finally(response)
+        config.release(response)
     }
 }

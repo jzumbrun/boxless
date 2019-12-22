@@ -24,7 +24,9 @@ help:
 	@echo "    logs/clear             Clear logs."
 	@echo ""
 	@echo "test"
-	@echo "    test/all               Test it all."
+	@echo "    test/functional        Test functional."
+	@echo "test"
+	@echo "    test/unit              Test unit."
 	@echo ""
 	@echo "----------------------------------------"
 	@echo "To get started run: make start"
@@ -81,10 +83,13 @@ server/seed:
 	@echo 'Seeding db with test data...'
 	@${DOCKERCOMMANDAPP} "node ./server/lib/test/seed.js"
 
-test/all:
+test/functional:
 	@echo 'Restarting express server in testing env...'
-	@${DOCKERCOMMANDAPP} "NODE_ENV=testing cd /var/www/app && pm2 start dev.json"
-	@${DOCKERCOMMANDAPP} "cd /var/www/app && mocha ./server/routes/**/*.test.js --exit --config ./server/lib/test/config.js"
+	@${DOCKERCOMMANDAPP} "NODE_ENV=testing pm2 start dev.json"
+	@${DOCKERCOMMANDAPP} "mocha ./server/routes/**/*.test.js --exit --config ./server/lib/test/config.js"
 	@echo 'Restarting express server in development env...'
-	@${DOCKERCOMMANDAPP} "NODE_ENV=development cd /var/www/app && pm2 start dev.json"
+	@${DOCKERCOMMANDAPP} "NODE_ENV=development pm2 start dev.json"
+
+test/unit:
+	@${DOCKERCOMMANDAPP} "mocha ./server/supersequel/*.test.js"
 
