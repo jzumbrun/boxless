@@ -1,3 +1,4 @@
+const _ = require('lodash')
 const expect = require('expect')
 const { route } = require('./index')
 
@@ -60,8 +61,8 @@ describe('Supersequel', () => {
             }).then(() => {
                 expect(res.data.queries[0].results).toEqual('SELECT id FROM Users WHERE UserId = 105 OR 1&#x3D;1;')
                 done()
-            }).catch(() => {
-                done()
+            }).catch(error => {
+                done(error)
             })
         })
 
@@ -121,8 +122,105 @@ describe('Supersequel', () => {
                     { id: '2', name: 'long', results: '200' }
                     ])
                 done()
-            }).catch(() => {
+            }).catch(error => {
+                done(error)
+            })
+        })
+
+        it('previous query results', (done) => {
+            route({
+                    user: {
+                        id: 123,
+                        access: ['user']
+                    },
+                    body: {
+                        queries: [
+                            {
+                                id: '1',
+                                name: 'thing.one',
+                                sync: true
+                            },
+                            {
+                                id: '2',
+                                name: 'thing.two',
+                                sync: true
+                            }
+                        ]
+                    }
+                },
+                res, {
+                definitions: [
+                    {
+                        name: 'thing.one',
+                        expression: 'thing.one',
+                        access: ['user']
+                    },
+                    {
+                        name: 'thing.two',
+                        expression: 'thing.two is bigger than {{$history.[0].results}}',
+                        access: ['user']
+                    }
+                ],
+                query: query,
+                release: release
+            }).then(() => {
+                expect(res.data.queries).toEqual([
+                    {
+                        id: '1', name: 'thing.one', results: 'thing.one' },
+                    {
+                        id: '2',
+                        name: 'thing.two',
+                        results: 'thing.two is bigger than thing.one'
+                    }
+                ])
                 done()
+            }).catch(error => {
+                done(error)
+            })
+        })
+
+        it('register helpers', (done) => {
+            route({
+                    user: {
+                        id: 123,
+                        access: ['user']
+                    },
+                    body: {
+                        queries: [
+                            {
+                                id: '1',
+                                name: 'thing.one',
+                                properties: {
+                                    trimspace: '  nospaces   '
+                                }
+                            }
+                        ]
+                    }
+                },
+                res, {
+                definitions: [
+                    {
+                        name: 'thing.one',
+                        expression: 'thing.one {{_trim trimspace}}',
+                        access: ['user']
+                    }
+                ],
+                query: query,
+                release: release,
+                helpers: [
+                    {
+                        functions: { trim: _.trim},
+                        prefix: '_'
+                    }
+                ]
+            }).then(() => {
+                expect(res.data.queries).toEqual([
+                    {
+                        id: '1', name: 'thing.one', results: 'thing.one nospaces' }
+                ])
+                done()
+            }).catch(error => {
+                done(error)
             })
         })
     })

@@ -1,4 +1,3 @@
-const _ = require('lodash')
 const Ajv = require('ajv')
 const hbs = require('handlebars')
 const intersection = require('lodash/intersection')
@@ -39,7 +38,7 @@ function validateRequest(request = {}, inboundAjv) {
 
 /**
  * Validate Query Definition
- * @param {object} query 
+ * @param {object} definition 
  * @param {Ajv} inboundAjv 
  */
 function validateQueryDefinition(definition = {}, inboundAjv) {
@@ -97,26 +96,37 @@ function outbound(response, request, rows, definition) {
 
 /**
  * Query
- * @param {string} query 
- * @param {object} properties 
- * @param {User} user 
+ * @param {object} request
+ * @param {object} definition
+ * @param {object} config
+ * @param {object} user
+ * @param {array} history
  * @return Promise
  */
-function query(request, definition, config, user = {}) {
-    const expression = hbs.compile(definition.expression)({...request.properties || {}, user})
+function query(request, definition, config, user = {}, history = {}) {
+    const expression = hbs.compile(definition.expression)({...request.properties || {}, '$user': user, '$history': history})
     return config.query(expression)
 }
 
 
 /**
  * Register Handlebar Helpers
+ * @param {array} helpers
  */
-function registerHelpers() {
-    // Register a helper for every lodash function
-    for(const fn in _) {
-        hbs.registerHelper(`_${fn}`, function(...args) {
-            return _[fn](...args)
-        })
+function registerHelpers(helpers = []) {
+    for(const helper of helpers) {
+        // Set defaults
+        helper.functions = helper.functions || []
+        helper.prefix = helper.prefix || ''
+
+        // Register a helper for every function
+        for(const fn in helper.functions) {
+            if(typeof helper.functions[fn] == 'function') {
+                hbs.registerHelper(`${helper.prefix}${fn}`, function(...args) {
+                    return helper.functions[fn](...args)
+                })
+            }
+        }
     }
 }
 
@@ -133,7 +143,29 @@ function getRequestName(request) {
 
 
 /**
+ * Query Error
+ * @param {object} error 
+ * @param {object} request 
+ * @param {object} response 
+ * @param {object} config
+ */
+function queryError(error, request, response, config) {
+    // Do we have good sql statements?
+    let err = {...getRequestName(request), error: {'errno': 1006, 'code': 'ERROR_IMPROPER_QUERY_STATEMENT'}}
+    if(config.env == 'production')
+        response.queries.push(err)
+    else {
+        err.details = error.message
+        response.queries.push(err)
+    }
+}
+
+
+/**
  * Query route
+ * @param {object} req 
+ * @param {object} res 
+ * @param {object} config
  */
 module.exports.route = async (req, res, config={}) => {
     
@@ -141,11 +173,11 @@ module.exports.route = async (req, res, config={}) => {
     const inboundAjv = new Ajv({ useDefaults: true })
     const async = []
 
-    config.env = process.env.NODE_ENV || 'development'
+    config.env = process.env.NODE_ENV || 'production'
         
     try {
         // Register Handlebar helpers
-        registerHelpers()
+        registerHelpers(config.helpers)
 
         req.body.queries = req.body.queries || []
         for(const request of req.body.queries) {
@@ -181,29 +213,27 @@ module.exports.route = async (req, res, config={}) => {
                 if(!inboundAjv.validate(definition.inboundSchema, request.properties))
                     response.queries.push({...getRequestName(request), error: {'errno': 1004, 'code': 'ERROR_QUERY_INBOUND_VALIDATION', details: inboundAjv.errors}})
                 else {
-                    let queryPromise = query(request, definition, config, req.user)
+                    let queryPromise = query(request, definition, config, req.user, response.queries)
                     .then((rows) => {
                         outbound(response, request, rows, definition)
                     })
                     if(request.sync) await queryPromise
-                    else async.push(queryPromise)
+                    else {
+                        queryPromise.catch(error => queryError(error, request, response, config))
+                        async.push(queryPromise)
+                    }
                 }
                     
             } catch(error) {
                 // Do we have good sql statements?
-                let err = {...getRequestName(request), error: {'errno': 1006, 'code': 'ERROR_IMPROPER_QUERY_STATEMENT'}}
-                if(config.env == 'production')
-                    response.queries.push(err)
-                else {
-                    err.details = error.message
-                    response.queries.push(err)
-                }
-                    
+                queryError(error, request, response, config) 
             }
             
         }
 
-        if(async.length) await Promise.all((async))
+        // Process all of the async queries here
+        // The catch was defined above in the creation of the promise
+        if(async.length) await Promise.all((async)).catch((e) => {})
 
         res.send(response)
     } catch(error) {

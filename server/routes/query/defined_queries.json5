@@ -1,7 +1,7 @@
 [
     {
         "name": "greetings.delete",
-        "expression": "DELETE FROM greetings WHERE id={{id}} AND user_id={{user.id}}",
+        "expression": "DELETE FROM greetings WHERE id={{id}} AND user_id={{$user.id}}",
         "access": ["user"],
         "inboundSchema": {
             "type": "object",
@@ -19,7 +19,7 @@
         "expression": "\
             SELECT {{select}} \
             FROM greetings \
-            WHERE user_id={{user.id}} \
+            WHERE user_id={{$user.id}} \
             AND description='{{_trim description}}' \
             LIMIT {{limit}}\
         ",
@@ -58,7 +58,7 @@
     },
     {
         "name": "greetings.select",
-        "expression": "SELECT {{select}} FROM greetings WHERE user_id={{user.id}} LIMIT {{limit}}",
+        "expression": "SELECT {{select}} FROM greetings WHERE user_id={{$user.id}} LIMIT {{limit}}",
         "access": ["user"],
         "inboundSchema": {
             "type": "object",
@@ -78,7 +78,7 @@
     },
     {
         "name": "greetings.insert",
-        "expression": "INSERT INTO greetings (description, words, user_id) VALUES ('{{description}}', '{{words}}', {{user.id}})",
+        "expression": "INSERT INTO greetings (description, words, user_id) VALUES ('{{description}}', '{{words}}', {{$user.id}})",
         "access": ["user"],
         "inboundSchema": {
             "type": "object",
@@ -97,7 +97,7 @@
     },
     {
         "name": "greetings.update",
-        "expression": "UPDATE greetings SET description='{{description}}' WHERE id={{id}} AND user_id={{user.id}}",
+        "expression": "UPDATE greetings SET description='{{description}}' WHERE id={{id}} AND user_id={{$user.id}}",
         "access": ["user"],
         "inboundSchema": {
             "type": "object",
@@ -115,7 +115,7 @@
     },
     {
         "name": "users.current",
-        "expression": "SELECT {{select}} FROM users WHERE id={{user.id}} LIMIT 1",
+        "expression": "SELECT {{select}} FROM users WHERE id={{$user.id}} LIMIT 1",
         "access": ["user"],
         "inboundSchema": {
             "type": "object",

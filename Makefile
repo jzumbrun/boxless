@@ -16,7 +16,8 @@ help:
 	@echo "    server/watch           Watchman restart the dev server."
 	@echo "    server/status          Show pm2 status."
 	@echo "    server/logs            Show server logs."
-	@echo "    server/clear           Clear all server logs."
+	@echo "    server/clear           Clear all server logs."'
+	@echo "    server/seed            Seed the db."
 	@echo "    server/start           Start the dev server, webpack."
 	@echo "    server/stop            Stop the dev server."
 	@echo ""
@@ -36,7 +37,6 @@ start: logs/clear watch
 	@echo 'Starting docker...'
 	@docker-compose up -d
 	@${DOCKERCOMMANDAPP} "cd ./server && npm ci"
-	@${DOCKERCOMMANDAPP} "npm install -g pm2 && npm install -g mocha"
 	@${DOCKERCOMMANDAPP} "pm2 start dev.json"
 	@${DOCKERCOMMANDMYSQL} "mysql -uroot -p'b33pb00p' -e 'CREATE DATABASE test;'"
 	@${DOCKERCOMMANDMYSQL} "mysql -uroot -p'b33pb00p' -e 'GRANT ALL PRIVILEGES ON test.* TO \"supercontainer\"@\"%\";'"
@@ -86,7 +86,7 @@ server/seed:
 test/functional:
 	@echo 'Restarting express server in testing env...'
 	@${DOCKERCOMMANDAPP} "NODE_ENV=testing pm2 start dev.json"
-	@${DOCKERCOMMANDAPP} "mocha ./server/routes/**/*.test.js --exit --config ./server/lib/test/config.js"
+	-@${DOCKERCOMMANDAPP} "NODE_ENV=testing mocha ./server/routes/**/*.test.js --exit --config ./server/lib/test/config.js"
 	@echo 'Restarting express server in development env...'
 	@${DOCKERCOMMANDAPP} "NODE_ENV=development pm2 start dev.json"
 

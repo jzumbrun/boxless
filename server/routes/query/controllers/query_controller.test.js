@@ -92,18 +92,17 @@ describe('Queries', () => {
         it('insert missing expression in definition', (done) => {
             axios.post(url, {
                 queries: [{
-                    name: "missing.expression"
+                    name: "missing.expression",
                 }]
             }).then(response => {
                 expect(response.status).toEqual(200)
                 expect(response.data.queries).toEqual([{
-                    name: 'missing.expression',
                     details: 'ER_EMPTY_QUERY: Query was empty',
                     error: {
-                        code: 'ERROR_IMPROPER_QUERY_STATEMENT',
-                        errno: 1006
-                      }
-                }])
+                    code: 'ERROR_IMPROPER_QUERY_STATEMENT',
+                    errno: 1006,
+                    },
+                    name: 'missing.expression'}])
                 done()
             }).catch(error => {
                 done(error)
