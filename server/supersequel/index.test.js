@@ -136,12 +136,12 @@ describe('Supersequel', () => {
                     body: {
                         queries: [
                             {
-                                id: '1',
+                                id: 'one',
                                 name: 'thing.one',
                                 sync: true
                             },
                             {
-                                id: '2',
+                                id: 'two',
                                 name: 'thing.two',
                                 sync: true
                             }
@@ -157,7 +157,7 @@ describe('Supersequel', () => {
                     },
                     {
                         name: 'thing.two',
-                        expression: 'thing.two is bigger than {{$history.[0].results}}',
+                        expression: 'thing.two is bigger than {{$history.one}}',
                         access: ['user']
                     }
                 ],
@@ -166,9 +166,9 @@ describe('Supersequel', () => {
             }).then(() => {
                 expect(res.data.queries).toEqual([
                     {
-                        id: '1', name: 'thing.one', results: 'thing.one' },
+                        id: 'one', name: 'thing.one', results: 'thing.one' },
                     {
-                        id: '2',
+                        id: 'two',
                         name: 'thing.two',
                         results: 'thing.two is bigger than thing.one'
                     }

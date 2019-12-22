@@ -81,16 +81,20 @@ function validateQueryDefinition(definition = {}, inboundAjv) {
  * @param {object} request 
  * @param {array} rows 
  * @param {object} definition 
+ * @param {object} history 
  */
-function outbound(response, request, rows, definition) {
+function outbound(response, request, rows, definition, history) {
     const outboundAjv = new Ajv({ useDefaults: true, removeAdditional: 'all' })
 
     // Do we have proper outbound query schema
     if(!outboundAjv.validate(definition.outboundSchema, rows)){
         response.queries.push({...getRequestName(request), error: {'errno': 1005, 'code': 'ERROR_QUERY_OUTBOUND_VALIDATION', details: outboundAjv.errors}})
     }
-    else
+    else {
+        if(request.id) history[request.id] = rows
+        // Add succesfull query responses by id
         response.queries.push({...getRequestName(request), results: rows })
+    }
 }
 
 
@@ -172,6 +176,7 @@ module.exports.route = async (req, res, config={}) => {
     const response = {queries: []}
     const inboundAjv = new Ajv({ useDefaults: true })
     const async = []
+    const history = {}
 
     config.env = process.env.NODE_ENV || 'production'
         
@@ -208,25 +213,18 @@ module.exports.route = async (req, res, config={}) => {
                 continue
             }
             
-            try {
-                // Do we have proper inbound query schema?
-                if(!inboundAjv.validate(definition.inboundSchema, request.properties))
-                    response.queries.push({...getRequestName(request), error: {'errno': 1004, 'code': 'ERROR_QUERY_INBOUND_VALIDATION', details: inboundAjv.errors}})
-                else {
-                    let queryPromise = query(request, definition, config, req.user, response.queries)
-                    .then((rows) => {
-                        outbound(response, request, rows, definition)
-                    })
-                    if(request.sync) await queryPromise
-                    else {
-                        queryPromise.catch(error => queryError(error, request, response, config))
-                        async.push(queryPromise)
-                    }
-                }
-                    
-            } catch(error) {
-                // Do we have good sql statements?
-                queryError(error, request, response, config) 
+            // Do we have proper inbound query schema?
+            if(!inboundAjv.validate(definition.inboundSchema, request.properties))
+                response.queries.push({...getRequestName(request), error: {'errno': 1004, 'code': 'ERROR_QUERY_INBOUND_VALIDATION', details: inboundAjv.errors}})
+            else {
+                let queryPromise = query(request, definition, config, req.user, history)
+                .then((rows) => {
+                    outbound(response, request, rows, definition, history)
+                })
+                .catch(error => queryError(error, request, response, config))
+                
+                if(request.sync) await queryPromise
+                else async.push(queryPromise)
             }
             
         }
