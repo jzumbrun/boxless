@@ -110,3 +110,7 @@ Simplifying the server logic helps alleviate the strain. Many SPAs are now reque
 make start
 Note: It is encouraged to use watchan to watch file changes on the host side, thus reducing CPU usage within docker.
 To install watchman visit https://facebook.github.io/watchman/docs/install.html
+
+## Tests
+make test/all
+This runs both the funtional and unit tests.
