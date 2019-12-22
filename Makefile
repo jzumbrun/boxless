@@ -25,8 +25,8 @@ help:
 	@echo ""
 	@echo "test"
 	@echo "    test/functional        Test functional."
-	@echo "test"
 	@echo "    test/unit              Test unit."
+	@echo "    test/all               Test all."
 	@echo ""
 	@echo "----------------------------------------"
 	@echo "To get started run: make start"
@@ -93,3 +93,5 @@ test/functional:
 test/unit:
 	@${DOCKERCOMMANDAPP} "mocha ./server/supersequel/*.test.js"
 
+test/all: test/functional test/unit
+	@echo 'Testing all...'
