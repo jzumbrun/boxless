@@ -19,7 +19,7 @@ class Model {
      * @param {string} sql 
      * @param {object} values 
      */
-    async query(sql, values = {}, options={}) {
+    async query(sql, values = [], options={}) {
         const connection = await this.getConnection()
         return new Promise((resolve, reject) => {
             connection.query(sql, values, (error, rows) => {
@@ -36,7 +36,7 @@ class Model {
      * @param {string} sql 
      * @param {object} values 
      */
-    queryFirst(sql, values = {}) {
+    queryFirst(sql, values = []) {
         return this.query(sql, values, {first: true})
     }
 

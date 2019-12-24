@@ -11,7 +11,12 @@ the chattiness of SPAs. Similart to GraphQL, all requests are POSTS regardless o
 #### Examples
 
 ## Client request
-Each query request requires a name, and an optional properties object (as defined by the query definition).
+Each query request requires a name, an optional id, sync and properties object (as defined by the query definition).
+
+id: Required if querying for same query name multiple times, or if accessing previous query response history.
+name: The name is used to find the defined query name.
+properties: Data values supplied to the expression query string.
+sync: Sync will force an async/await on the query. All synced queries will load first no matter the request order.
 
 ```
 {
@@ -36,18 +41,23 @@ Each query request requires a name, and an optional properties object (as define
 Each query is given a name, an SQL expression, an access list, and an inbound schema.
 
 Name: Name should reflect the resource and action. This is only a convention. But it must be unique.
-Expression: The expression is a simple SQL statement managed by handlebars. Handlebars will take care of sql injections.
+expression: The expression is a simple SQL statement managed by handlebars. Handlebars will take care of sql injections.
     We have take the liberty to add all lodash functions to handlebars for convenience. That are defined as `_trim`, etc.
-    Each property from the clien request will be available to use in the query statement as well as a user object
+    Each property from the client request will be available to use in the query statement as well as a user object
     that is provided by Supercontainer via a signin gateway and JWT tokens.
-Access: The access array is a whitelist for authorized access to each query.
-Inbound Schema: Inbound schema utilizes json schema and validates inbound data.
-Outbound Schema: Outbound schema utilizes json schema and validates data coming from the database response.
+    All successfull query responses within a client request will be available to subseqent queries in the $history object.
+    An id is required on the query request inorder to access it in the $history object. Also the sync must be set to true, in
+    order to ensure the previous query is run in proper order.
+access: The access array is a whitelist for authorized access to each query.
+inboundSchema: Inbound schema utilizes json schema and validates inbound data.
+outboundSchema: Outbound schema utilizes json schema and validates data coming from the database response.
     If properties are not defined, they will be removed form the outbound response.
 ```
 {
+    "id": "greetings.insert",
     "name": "greetings.insert",
-    "expression": "INSERT INTO greetings (description, words, user_id) VALUES ('{{description}}', '{{words}}', {{user.id}})",
+    sync: true,
+    "expression": "INSERT INTO greetings (description, words, user_id) VALUES ('{{description}}', '{{words}}', {{$user.id}})",
     "access": ["user"],
     "inboundSchema": {
         "type": "object",
@@ -65,8 +75,9 @@ Outbound Schema: Outbound schema utilizes json schema and validates data coming 
     }
 },
 {
-    "name": "greetings.select",
-    "expression": "SELECT {{select}} FROM greetings WHERE user_id={{user.id}} LIMIT {{limit}}",
+    "name": "greetings.select.byId",
+    sync: true,
+    "expression": "SELECT {{select}} FROM greetings WHERE user_id={{$user.id}} AND id={{$history.[greetings.insert].id}} LIMIT {{limit}}",
     "access": ["user"],
     "inboundSchema": {
         "type": "object",

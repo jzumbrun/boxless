@@ -6,7 +6,7 @@ const seeder = require('@app/lib/test/seeder')
 
 describe('Seed', () => {
     it('seeding', (done) => {
-        seeder.seed()
+        seeder.seed('greeting')
         .then(() => {
             done()
         }).catch(error => {
@@ -20,7 +20,7 @@ describe('Queries', () => {
 
     describe('greetings', () => {
         let url = util.buildUrl('query')
-        
+
         it('set token', (done) => {
             axios.put(util.buildUrl('users/signin'), {
                 email: 'master@dude.com',
@@ -303,7 +303,7 @@ describe('Queries', () => {
 
 describe('Deseed', () => {
     it('deseeding', (done) => {
-        seeder.deseed()
+        seeder.deseed('greeting')
         .then(() => {
             done()
         }).catch(error => {

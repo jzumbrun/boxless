@@ -88,7 +88,7 @@ function outbound(response, request, rows, definition, history) {
 
     // Do we have proper outbound query schema
     if(!outboundAjv.validate(definition.outboundSchema, rows)){
-        response.queries.push({...getRequestName(request), error: {'errno': 1005, 'code': 'ERROR_QUERY_OUTBOUND_VALIDATION', details: outboundAjv.errors}})
+        response.queries.push({...getRequestName(request), error: {errno: 1005, code: 'ERROR_QUERY_OUTBOUND_VALIDATION', details: outboundAjv.errors}})
     }
     else {
         if(request.id) history[request.id] = rows
@@ -155,7 +155,7 @@ function getRequestName(request) {
  */
 function queryError(error, request, response, config) {
     // Do we have good sql statements?
-    let err = {...getRequestName(request), error: {'errno': 1006, 'code': 'ERROR_IMPROPER_QUERY_STATEMENT'}}
+    let err = {...getRequestName(request), error: {errno: 1006, code: 'ERROR_IMPROPER_QUERY_STATEMENT'}}
     if(config.env == 'production')
         response.queries.push(err)
     else {
@@ -190,32 +190,32 @@ module.exports.route = async (req, res, config={}) => {
 
             // Do we have proper request schema?
             if(!validateRequest(request, inboundAjv)){
-                response.queries.push({...getRequestName(request), error: {'errno': 1000, 'code': 'ERROR_REQUEST_VALIDATION', details: inboundAjv.errors}})
+                response.queries.push({...getRequestName(request), error: {errno: 1000, code: 'ERROR_REQUEST_VALIDATION', details: inboundAjv.errors}})
                 continue
             }
 
             // Do we have proper definition query schema?
             let definition = config.definitions.find(q => q.name == request.name)
             if(!validateQueryDefinition(definition, inboundAjv)){
-                response.queries.push({...getRequestName(request), error: {'errno': 1001, 'code': 'ERROR_QUERY_DEFINITION_VALIDATION', details: inboundAjv.errors}})
+                response.queries.push({...getRequestName(request), error: {errno: 1001, code: 'ERROR_QUERY_DEFINITION_VALIDATION', details: inboundAjv.errors}})
                 continue
             }
 
             // Do we have sql?
             if(!definition){
-                response.queries.push({...getRequestName(request), error: {'errno': 1002, 'code': 'ERROR_QUERY_NOT_FOUND'} })
+                response.queries.push({...getRequestName(request), error: {errno: 1002, code: 'ERROR_QUERY_NOT_FOUND'} })
                 continue
             }
 
             // Do we have access rights?
             if(!intersection(definition.access, req.user.access).length){
-                response.queries.push({...getRequestName(request), error: {'errno': 1003, 'code': 'ERROR_QUERY_NO_ACCESS'} })
+                response.queries.push({...getRequestName(request), error: {errno: 1003, code: 'ERROR_QUERY_NO_ACCESS'} })
                 continue
             }
             
             // Do we have proper inbound query schema?
             if(!inboundAjv.validate(definition.inboundSchema, request.properties))
-                response.queries.push({...getRequestName(request), error: {'errno': 1004, 'code': 'ERROR_QUERY_INBOUND_VALIDATION', details: inboundAjv.errors}})
+                response.queries.push({...getRequestName(request), error: {errno: 1004, code: 'ERROR_QUERY_INBOUND_VALIDATION', details: inboundAjv.errors}})
             else {
                 let queryPromise = query(request, definition, config, req.user, history)
                 .then((rows) => {
@@ -236,7 +236,7 @@ module.exports.route = async (req, res, config={}) => {
         res.send(response)
     } catch(error) {
         // Do we have any uknown issues?
-        let err = {error: {'errno': 1007, 'code': 'ERROR_UNKNOWN'}}
+        let err = {error: {errno: 1007, code: 'ERROR_UNKNOWN'}}
         if(config.env == 'production')
             response.queries.push(err)
         else {

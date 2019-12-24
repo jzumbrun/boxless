@@ -12,6 +12,17 @@ config.defaults = {
         database : 'supercontainer'
     },
 
+    mailProvider: {
+        smtp: {
+            service: '',
+            auth: {
+                user: '',
+                pass: ''
+            }
+        },
+        from: 'Supercontainer'
+    },
+
     secret: '4Rf3FFgtRgFg60KPM',
 
     open_paths: [
@@ -34,6 +45,9 @@ config.testing = {
         host     : 'db',
         database : 'test'
     },
+    mailProvider: {
+        smtp: null
+    }
 }
 
 /** STAGING **/

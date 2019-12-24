@@ -1,32 +1,29 @@
-const UsersModel = require('@app/routes/users/models/users_model')
 const crypto = require('crypto')
+const Mailer = require('@app/lib/mailer')
 const server = require('@app/lib/server')
+const UsersModel = require('@app/routes/users/models/users_model')
 
 
 /**
- * Current User Update
+ * Update Session User
  */
-server.put('/users', async (req, res) => {
-
-    const user = await UsersModel.getById(req.user.id)
-
-    // If something weird happens, abort.
-    if (!user) {
-        return res.status(422).send({'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
-    }
-
-    if(req.body.password) {
-        user.password = UsersModel.hashPassword(req.body.password, user.salt)
-    }
-
-    user.name = req.body.name
-    user.email = req.body.email
+server.put('/users/session', async (req, res) => {
 
     try {
+        const user = await UsersModel.getById(req.user.id)
+        // If something weird happens, abort.
+        if (!user.id) throw({'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
+
+        if(req.body.password) {
+            user.password = UsersModel.hashPassword(req.body.password, user.salt).password
+        }
+
+        if(req.body.name) user.name = req.body.name
+        if(req.body.name) user.email = req.body.email
         await UsersModel.update(user)
         res.send({ token: UsersModel.token(user) })
-    } catch(err) {
-        return res.status(422).send(err)
+    } catch(error) {
+        return res.status(422).send({error})
     }
 
 })
@@ -49,10 +46,10 @@ server.put('/users/signin', async (req, res) => {
 server.post('/users/signup', async (req, res) => {
     try {
         const response = await UsersModel.insert(req.body.name, req.body.email, req.body.password)
-        const user = await UsersModel.getById(response.id || response.insertId)
+        const user = await UsersModel.getById(response.insertId)
         res.send({ token: UsersModel.token(user) })
-    } catch(err) {
-        return res.status(422).send({'err': err, 'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
+    } catch(error) {
+        return res.status(422).send({error})
     }
 
 })
@@ -60,52 +57,40 @@ server.post('/users/signup', async (req, res) => {
 /**
  * Forgot
  */
-server.post('/users/forgot', async (req, res) => {
-    var User = mongoose.model('User'),
-        mail = require('@app/lib/mailer'),
-        message = {}
+server.put('/users/forgot', async (req, res) => {
 
-    User.findOne({
-        email: req.body.email
-    }, function(err, user) {
-
+    try {
+        const mail = new Mailer()
+        const user = await UsersModel.getByEmail(req.body.email)
         // If something weird happens, abort.
-        if (err || !user) {
-            return res.status(422).send({errors: {email: {message: 'email_not_found'}}})
+        if (!user || !user.id) {
+            throw({errno: 2002, code: 'ERROR_EMAIL_DOES_NOT_EXIST'})
         }
 
         user.reset_password = crypto.randomBytes(16).toString('hex')
-        user.save(function(err) {
-
-            if (err) {
-                return res.status(422).send(err)
+        await UsersModel.update(user)
+        let log = await mail.send({
+            view: 'forgot',
+            message: {
+                subject: 'Contest Farm Password Reset',
+                to: user.email,
+                data: {
+                    name: user.name,
+                    url: 'http://' + req.headers.host + '/#/users/reset/' + user.id + '/' + user.reset_password}
             }
-
-            message = mail.send({
-                view: 'forgot',
-                message: {
-                    subject: 'Contest Farm Password Reset',
-                    to: user.email,
-                    data: {
-                        first_name: user.first_name, 
-                        url: 'http://' + req.headers.host + '/#/users/reset/' + user._id + '/' + user.reset_password}
-                }
-            })
-
-            console.log('Message', message)
-
-            res.send({message: 'emailed_password_reset'})
-
         })
+        res.send(log)
 
-
-    })
+    } catch(error) {
+        return res.status(422).send({error})
+    }
+    
 })
 
 /**
  * Reset
  */
-server.post('/users/reset', async (req, res) => {
+server.put('/users/reset', async (req, res) => {
     var User = mongoose.model('User')
 
     User.findOne({

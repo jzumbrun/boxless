@@ -1,9 +1,9 @@
-const Model = require('@app/lib/model'),
-    config = require('@app/config'),
-    jwt = require('jsonwebtoken'),
-    crypto = require('crypto')
+const crypto = require('crypto')
+const jwt = require('jsonwebtoken')
+const Model = require('@app/lib/model')
+const config = require('@app/config')
 
-class UsersModel extends Model{
+class UsersModel extends Model {
 
     /**
      * Get by Id
@@ -11,6 +11,14 @@ class UsersModel extends Model{
      */
     getById(id) {
         return this.queryFirst('SELECT * FROM users WHERE id = ?', [id])
+    }
+    
+    /**
+     * Get By Email
+     * return promise
+     */
+    getByEmail(email = '') {
+        return this.queryFirst('SELECT id, name, email FROM users WHERE email = ?', [email])
     }
 
     /**
@@ -30,8 +38,8 @@ class UsersModel extends Model{
      * return promise
      */
     async insert(name, email, password) {
-        const exists = await this.validateUniqueEmail(email)
-        if(exists.id) return exists
+        const exists = await this.getByEmail(email)
+        if(exists.id) throw ({'errno': 2001, 'code': 'ERROR_EMAIL_EXISTS'})
         let hash = this.hashPassword(password)
         return this.query('INSERT INTO users (name, email, password, salt, access) VALUES(?, ?, ?, ?, ?)',
                 [name, email, hash.password, hash.salt, JSON.stringify(['user'])])
@@ -42,19 +50,23 @@ class UsersModel extends Model{
      * return promise
      */
     async update(user) {
-        const exist = await this.validateUniqueEmail(email)
-        if(exist && (exists.id != user.id)){
-            throw({'errno': 2001, 'code': 'ERROR_EMAIL_EXISTS'})
+        if(user.email) {
+            let exists = await this.getByEmail(user.email)
+            if(exists && exists.id && (exists.id != user.id)){
+                throw({'errno': 2001, 'code': 'ERROR_EMAIL_EXISTS'})
+            }
         }
-        return this.query('INSERT INTO users (name, email, password) VALUES(?, ?, ?)', [user.name, user.email, user.password])
-    }
 
-    /**
-     * Validate Unique Email
-     * return promise
-     */
-    validateUniqueEmail(email = '') {
-        return this.queryFirst('SELECT id FROM users WHERE email = ?', [email])
+        let query = 'UPDATE users SET '
+        let fields = []
+        for(const field in user) {
+            if(field !== 'id') {
+                fields.push(`${field}=${this.escape(user[field])}`)
+            }
+        }
+        query = query.concat(fields.join(', '))
+        query = query.concat(` WHERE id=${this.escape(user.id)}`)
+        return this.query(query)
     }
 
     /**

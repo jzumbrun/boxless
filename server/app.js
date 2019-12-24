@@ -1,12 +1,13 @@
 require('module-alias/register')
 require('json5/lib/register')
 
-const parser = require('body-parser'),
-    compression = require('compression'),
-    jwt = require('express-jwt'),
-    config = require('@app/config'),
-    server = require('@app/lib/server'),
-    controllers = require('@app/lib/controllers')
+const parser = require('body-parser')
+const compression = require('compression')
+const jwt = require('express-jwt')
+const config = require('@app/config')
+const server = require('@app/lib/server')
+const controllers = require('@app/lib/controllers')
+const layouts = require('@app/lib/layouts')
 
 /**
  *  Define the server
@@ -54,7 +55,7 @@ class App {
         server.use(compression())
         server.use(parser.json())
         server.use(parser.urlencoded({ extended: true }))
-        
+
         // We are going to protect routes with JWT
         server.use(jwt({
             secret: config.secret
@@ -64,6 +65,11 @@ class App {
 
         // Load the controllers
         controllers.load()
+        // Load the layouts
+        layouts.load()
+
+        // View engine setup
+        server.set('view engine', 'hbs')
 
         // Error handlers
         this.errors()
