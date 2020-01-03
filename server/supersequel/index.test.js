@@ -1,6 +1,8 @@
 const _ = require('lodash')
 const expect = require('expect')
-const { route } = require('./index')
+const supersequel = require('./index')({
+    helpers: [{ functions: { trim: _.trim}, prefix: '_' }]
+})
 
 function release(response) {
     // nothing
@@ -32,7 +34,7 @@ describe('Supersequel', () => {
         }
         
         it('sql injection', (done) => {
-            route({
+            supersequel.route({
                 user: {
                     id: 123,
                     access: ['user']
@@ -67,7 +69,7 @@ describe('Supersequel', () => {
         })
 
         it('sync', (done) => {
-            route({
+            supersequel.route({
                 user: {
                     id: 123,
                     access: ['user']
@@ -128,7 +130,7 @@ describe('Supersequel', () => {
         })
 
         it('previous query results', (done) => {
-            route({
+            supersequel.route({
                     user: {
                         id: 123,
                         access: ['user']
@@ -179,8 +181,8 @@ describe('Supersequel', () => {
             })
         })
 
-        it('register helpers', (done) => {
-            route({
+        it('registered helpers', (done) => {
+            supersequel.route({
                     user: {
                         id: 123,
                         access: ['user']
@@ -206,13 +208,7 @@ describe('Supersequel', () => {
                     }
                 ],
                 query: query,
-                release: release,
-                helpers: [
-                    {
-                        functions: { trim: _.trim},
-                        prefix: '_'
-                    }
-                ]
+                release: release
             }).then(() => {
                 expect(res.data.queries).toEqual([
                     {

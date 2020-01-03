@@ -91,7 +91,7 @@ test/functional:
 	@${DOCKERCOMMANDAPP} "NODE_ENV=development pm2 start dev.json"
 
 test/unit:
-	@${DOCKERCOMMANDAPP} "mocha ./server/supersequel/*.test.js"
+	@${DOCKERCOMMANDAPP} "NODE_ENV=testing mocha ./server/supersequel/*.test.js"
 
 test/all: test/functional test/unit
 	@echo 'Testing all...'

@@ -91,28 +91,18 @@ server.put('/users/forgot', async (req, res) => {
  * Reset
  */
 server.put('/users/reset', async (req, res) => {
-    var User = mongoose.model('User')
-
-    User.findOne({
-        _id: req.body._id,
-        reset_password: req.body.reset_password
-    }, function(err, user) {
-
+    try {
+        const user = await UsersModel.getByIdAndResetPassword(req.body.id)
         // If something weird happens, abort.
-        if (err || !user) {
-            return res.status(422).send({errors: {email: {message: 'reset_password_wrong'}}})
-        }
+        if (!user.id) throw({'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
 
         user.reset_password = ''
         user.password = req.body.password
-        user.save(function(err) {
-            if (err) {
-                return res.status(422).send(err)
-            }
 
-            res.send({ token: user.token() })
+        await UsersModel.update(user)
+        res.send({ token: UsersModel.token(user) })
+    } catch(error) {
+        return res.status(422).send({error})
+    }
 
-        })
-
-    })
 })

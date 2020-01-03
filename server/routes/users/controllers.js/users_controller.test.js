@@ -126,6 +126,21 @@ describe('Users', () => {
             })
         })
 
+        // it('reset wrong', (done) => {
+        //     axios.put(util.buildUrl('users/reset'), {
+        //         email: 'triple@dude.com'  
+        //     }).then((response) => {
+        //         expect(response.status).toEqual(200)
+        //         expect(response.data[0].details.from).toEqual('Supercontainer')
+        //         expect(response.data[0].details.to).toEqual('triple@dude.com')
+        //         expect(response.data[0].details.subject).toEqual('Contest Farm Password Reset')
+        //         expect(response.data[0].details.text).toContain('http://localhost:8081/#/users/reset/2/')
+        //         done()
+        //     }).catch(error => {
+        //         done(error)
+        //     })
+        // })
+
     })
 })
 
