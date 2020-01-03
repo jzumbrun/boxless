@@ -10,7 +10,7 @@ const UsersModel = require('@app/routes/users/models/users_model')
 server.put('/users/session', async (req, res) => {
 
     try {
-        const user = await UsersModel.getById(req.user.id)
+        const user = await UsersModel.executeFirst('getById', {id: req.user.id})
         // If something weird happens, abort.
         if (!user.id) throw({'errno': 2000, 'code': 'ERROR_USER_NOT_FOUND'})
 
@@ -23,6 +23,7 @@ server.put('/users/session', async (req, res) => {
         await UsersModel.update(user)
         res.send({ token: UsersModel.token(user) })
     } catch(error) {
+        console.log(error)
         return res.status(422).send({error})
     }
 
@@ -47,6 +48,7 @@ server.post('/users/signup', async (req, res) => {
     try {
         const response = await UsersModel.insert(req.body.name, req.body.email, req.body.password)
         const user = await UsersModel.getById(response.insertId)
+
         res.send({ token: UsersModel.token(user) })
     } catch(error) {
         return res.status(422).send({error})

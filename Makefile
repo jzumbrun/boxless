@@ -16,13 +16,16 @@ help:
 	@echo "    server/watch           Watchman restart the dev server."
 	@echo "    server/status          Show pm2 status."
 	@echo "    server/logs            Show server logs."
-	@echo "    server/clear           Clear all server logs."'
+	@echo "    server/clear           Clear all server logs."
 	@echo "    server/seed            Seed the db."
 	@echo "    server/start           Start the dev server, webpack."
 	@echo "    server/stop            Stop the dev server."
 	@echo ""
 	@echo "logs"
 	@echo "    logs/clear             Clear logs."
+	@echo ""
+	@echo "code"
+	@echo "    code/lint              Lint code."
 	@echo ""
 	@echo "test"
 	@echo "    test/functional        Test functional."
@@ -82,6 +85,9 @@ server/stop: docker/stop server/clear
 server/seed:
 	@echo 'Seeding db with test data...'
 	@${DOCKERCOMMANDAPP} "node ./server/lib/test/seed.js"
+
+code/lint:
+	@${DOCKERCOMMANDAPP} "prettier --single-quote --write "server/**/*.js""
 
 test/functional:
 	@echo 'Restarting express server in testing env...'

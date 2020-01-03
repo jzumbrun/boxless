@@ -1,9 +1,54 @@
+const _ = require('lodash')
+
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
-const Model = require('@app/lib/model')
+
 const config = require('@app/config')
+const Model = require('@app/lib/model')
+const definitions = require('@app/routes/users/models/defined_queries.json5')
+const supersequel = require('@app/supersequel')({
+    helpers: [{functions: _, prefix: '_'}],
+    definitions: definitions,
+    query: (query) => {
+        return module.exports.query(query)
+    }
+})
 
 class UsersModel extends Model {
+
+    /**
+     * Execute
+     * @param {string} name 
+     * @param {object} properties 
+     */
+    async execute(name, properties={}, first=false) {
+        const results = await supersequel.execute({
+            queries: [{name, properties}],
+            user: {id: -1, access: ['admin']}
+        })
+
+        if(first)
+            return results.queries[0].results[0]
+        else
+            return results.queries[0].results
+    }
+
+    /**
+     * Execute
+     * @param {string} name 
+     * @param {object} properties 
+     */
+    executeFirst(name, properties={}) {
+        return this.execute(name, properties, true)
+    }
+
+    /**
+     * Supersequel
+     * @param {array} queries 
+     */
+    supersequel(queries) {
+        return supersequel.execute({queries})
+    }
 
     /**
      * Get by Id

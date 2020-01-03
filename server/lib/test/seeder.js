@@ -1,4 +1,4 @@
-const QueryModel = require('@app/routes/query/models/query_model')
+const QueriesModel = require('@app/routes/queries/models/queries_model')
 
     
 module.exports.seed = async (seed) => {
@@ -6,13 +6,13 @@ module.exports.seed = async (seed) => {
     console.log('   Seeding for', process.env.NODE_ENV)
     for (query of seeds) {
         try {
-            await QueryModel.query(query.expression)
+            await QueriesModel.query(query.expression)
         } catch(error) {
           console.log('   ', query.name, error)
         }
     }
 
-    QueryModel.release()
+    QueriesModel.release()
 }
 
 module.exports.deseed = async (seed) => {
@@ -20,11 +20,11 @@ module.exports.deseed = async (seed) => {
     console.log('   Deseeding for', process.env.NODE_ENV)
     for (query of deseeds) {
         try {
-            await QueryModel.query(query.expression)
+            await QueriesModel.query(query.expression)
         } catch(error) {
           console.log('   ', query.name, error)
         }
     }
 
-    QueryModel.release()
+    QueriesModel.release()
 }

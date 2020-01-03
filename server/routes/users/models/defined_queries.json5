@@ -1,0 +1,21 @@
+[
+    {
+        "name": "getById",
+        "expression": "SELECT {{select}} from users WHERE id={{id}}",
+        "access": ["admin"],
+        "inboundSchema": {
+            "type": "object",
+            "properties": {
+                "select": {
+                    "type": "string",
+                    "default": "*"
+                },
+                "id": {
+                    "type": "number"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["id"]
+        }
+    }
+]
