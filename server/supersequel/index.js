@@ -10,6 +10,7 @@ class Superqequel {
     config.definitions = config.definitions || [];
     config.env = process.env.NODE_ENV || 'production';
     config.query = config.query || null;
+    config.release = config.release || null;
     this.config = config;
   }
 
@@ -125,7 +126,7 @@ class Superqequel {
    * @return Promise
    */
   query(request, definition, config, user = {}, history = {}) {
-    const expression = this.hbs.instance.compile(definition.expression)({
+    const expression = this.hbs.compile(definition.expression, {
       ...(request.properties || {}),
       $user: user,
       $history: history
@@ -192,6 +193,7 @@ class Superqequel {
     config.env = config.env || this.config.env;
     config.definitions = config.definitions || this.config.definitions;
     config.query = config.query || this.config.query;
+    config.release = config.release || this.config.release;
 
     try {
       for (const query of config.queries) {
@@ -241,7 +243,7 @@ class Superqequel {
         }
 
         // Do we have proper inbound query schema?
-        if (!inboundAjv.validate(definition.inboundSchema, query.properties))
+        if (!inboundAjv.validate(definition.inboundSchema, query.properties)) {
           response.queries.push({
             ...this.getQueryName(query),
             error: {
@@ -250,7 +252,7 @@ class Superqequel {
               details: inboundAjv.errors
             }
           });
-        else {
+        } else {
           let queryPromise = this.query(
             query,
             definition,

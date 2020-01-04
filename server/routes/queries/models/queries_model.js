@@ -1,6 +1,5 @@
-const Model = require('@app/lib/model')
+const Model = require('@app/lib/model');
 
-class QueriesModel extends Model {
-}
+class QueriesModel extends Model {}
 
-module.exports = new QueriesModel()
+module.exports = new QueriesModel();

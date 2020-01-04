@@ -1,6 +1,6 @@
-require('module-alias/register')
-require('json5/lib/register')
+require('module-alias/register');
+require('json5/lib/register');
 
-process.removeAllListeners('SIGINT')
+process.removeAllListeners('SIGINT');
 
-module.exports = {}
+module.exports = {};

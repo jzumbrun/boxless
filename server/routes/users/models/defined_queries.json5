@@ -1,8 +1,8 @@
 [
     {
         "name": "getById",
-        "expression": "SELECT {{select}} from users WHERE id={{id}}",
-        "access": ["admin"],
+        "expression": "SELECT {{: select}} from users WHERE id={{id}}",
+        "access": ["system"],
         "inboundSchema": {
             "type": "object",
             "properties": {
@@ -12,6 +12,30 @@
                 },
                 "id": {
                     "type": "number"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["id"]
+        }
+    },
+    {
+        "name": "update",
+        "expression": "UPDATE users SET {{resource}} WHERE id={{resource.id}}",
+        "access": ["system"],
+        "inboundSchema": {
+            "type": "object",
+            "properties": {
+                "id": { "type": "number" },
+                "resource": {
+                    "type": "object",
+                    "properties": {
+                        name: { "type": "string" },
+                        email: { "type": "string" },
+                        password: { "type": "string" },
+                        salt: { "type": "string" },
+                        access: { "type": "string" },
+                        reset_password: { "type": ["string", "null"] }
+                    }
                 }
             },
             "additionalProperties": false,

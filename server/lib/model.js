@@ -48,14 +48,6 @@ class Model {
       // Just ignore the error
     }
   }
-
-  escape(query) {
-    return this._pool.escape(query);
-  }
-
-  escapeId(query) {
-    return this._pool.escapeId(query);
-  }
 }
 
 module.exports = Model;

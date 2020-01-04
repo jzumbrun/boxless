@@ -26,6 +26,7 @@ help:
 	@echo ""
 	@echo "code"
 	@echo "    code/lint              Lint code."
+	@echo "    code/supersequel       Supersequel playground."
 	@echo ""
 	@echo "test"
 	@echo "    test/functional        Test functional."
@@ -87,7 +88,10 @@ server/seed:
 	@${DOCKERCOMMANDAPP} "node ./server/lib/test/seed.js"
 
 code/lint:
-	@${DOCKERCOMMANDAPP} "prettier --single-quote --write "server/**/*.js""
+	@${DOCKERCOMMANDAPP} "prettier --single-quote --write 'server/**/*.js'"
+
+code/supersequel:
+	@${DOCKERCOMMANDAPP} "node ./server/lib/test/supersequel.js"
 
 test/functional:
 	@echo 'Restarting express server in testing env...'

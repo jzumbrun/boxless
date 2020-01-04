@@ -26,13 +26,7 @@ class Database {
   }
 
   _connect() {
-    this._pool = mysql.createPool({
-      connectionLimit: config.db.connectionLimit,
-      host: config.db.host,
-      user: config.db.user,
-      password: config.db.password,
-      database: config.db.database
-    });
+    this._pool = mysql.createPool(config.db);
   }
 }
 
