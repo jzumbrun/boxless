@@ -29,8 +29,6 @@ help:
 	@echo "    code/supersequel       Supersequel playground."
 	@echo ""
 	@echo "test"
-	@echo "    test/functional        Test functional."
-	@echo "    test/unit              Test unit."
 	@echo "    test/all               Test all."
 	@echo ""
 	@echo "----------------------------------------"
@@ -93,15 +91,9 @@ code/lint:
 code/supersequel:
 	@${DOCKERCOMMANDAPP} "node ./server/lib/test/supersequel.js"
 
-test/functional:
+test/all:
 	@echo 'Restarting express server in testing env...'
 	@${DOCKERCOMMANDAPP} "NODE_ENV=testing pm2 start dev.json"
 	-@${DOCKERCOMMANDAPP} "NODE_ENV=testing mocha ./server/routes/**/*.test.js --exit --config ./server/lib/test/config.js"
 	@echo 'Restarting express server in development env...'
 	@${DOCKERCOMMANDAPP} "NODE_ENV=development pm2 start dev.json"
-
-test/unit:
-	@${DOCKERCOMMANDAPP} "NODE_ENV=testing mocha ./server/supersequel/*.test.js"
-
-test/all: test/functional test/unit
-	@echo 'Testing all...'

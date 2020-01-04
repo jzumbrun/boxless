@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const config = require('@app/config');
 const Model = require('@app/lib/model');
 const definitions = require('@app/routes/users/models/defined_queries.json5');
-const supersequel = require('@app/supersequel')({
+const supersequel = require('@elseblock/supersequel')({
   helpers: [{ functions: _, prefix: '_' }],
   definitions: definitions,
   query: query => {

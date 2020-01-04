@@ -9,16 +9,14 @@
   },
   "scripts": {},
   "keywords": [
-    "react",
-    "flux",
-    "store",
+    "sql",
+    "json schema",
+    "api",
     "rest"
   ],
   "author": "Jon Zumbrun",
   "license": "MIT",
-  "dependencies": {
-    "hbs": "^4.0.6"
-  },
+  "dependencies": {},
   "peerDependencies": {},
   "devDependencies": {}
 }

@@ -16,23 +16,22 @@
     "@app": "."
   },
   "dependencies": {
-    "ajv": "^6.10.2",
-    "body-parser": "^1.19.0",
-    "compression": "^1.7.4",
-    "express": "^4.17.1",
-    "express-jwt": "^5.3.1",
-    "glob": "^6.0.4",
-    "handlebars": "^4.4.0",
-    "json5": "^2.1.1",
-    "lodash": "^4.17.15",
-    "module-alias": "^2.2.1",
-    "mysql": "^2.17.1",
-    "nodemailer": "^6.4.2"
+    "@elseblock/supersequel": "^0.2.1",
+    "body-parser": "1.19.0",
+    "compression": "1.7.4",
+    "express": "4.17.1",
+    "express-jwt": "5.3.1",
+    "glob": "6.0.4",
+    "hbs": "4.0.6",
+    "json5": "2.1.1",
+    "lodash": "4.17.15",
+    "module-alias": "2.2.1",
+    "mysql": "2.17.1",
+    "nodemailer": "6.4.2"
   },
   "devDependencies": {
     "axios": "0.19.0",
     "eslint": "3.12.2",
-    "eslint-plugin-react": "6.8.0",
     "expect": "24.9.0",
     "mocha": "6.2.0"
   }
