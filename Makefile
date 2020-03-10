@@ -16,7 +16,6 @@ help:
 	@echo "    server/watch           Watchman restart the dev server."
 	@echo "    server/status          Show pm2 status."
 	@echo "    server/logs            Show server logs."
-	@echo "    server/clear           Clear all server logs."
 	@echo "    server/seed            Seed the db."
 	@echo "    server/start           Start the dev server, webpack."
 	@echo "    server/stop            Stop the dev server."
@@ -71,14 +70,14 @@ server/restart:
 	@echo 'Starting/Restarting express server...'
 	@${DOCKERCOMMANDAPP} "pm2 start dev.json"
 
-server/start: docker/start server/restart
+server/start: server/restart
 	@echo 'Dev server started. Visit localhost:8081'
 
 server/watch:
 	@echo 'Wathman is restarting express server...'
 	@${DOCKERCOMMANDAPP} "pm2 restart supercontainer"
 
-server/stop: docker/stop server/clear
+server/stop: logs/clear
 	@echo 'Stopped dev server and related services.'
 
 server/seed:
@@ -93,7 +92,7 @@ code/supersequel:
 
 test/all:
 	@echo 'Restarting express server in testing env...'
-	@${DOCKERCOMMANDAPP} "NODE_ENV=testing pm2 start dev.json"
+	#@${DOCKERCOMMANDAPP} "NODE_ENV=testing pm2 start dev.json"
 	-@${DOCKERCOMMANDAPP} "NODE_ENV=testing mocha ./server/routes/**/*.test.js --exit --config ./server/lib/test/config.js"
 	@echo 'Restarting express server in development env...'
-	@${DOCKERCOMMANDAPP} "NODE_ENV=development pm2 start dev.json"
+	#@${DOCKERCOMMANDAPP} "NODE_ENV=development pm2 start dev.json"

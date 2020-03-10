@@ -69,13 +69,13 @@ server.post('/users/signup', async (req, res) => {
 server.put('/users/forgot', async (req, res) => {
   try {
     const mail = new Mailer();
-    const user = await UsersModel.getByEmail(req.body.email);
+    const user = await UsersModel.executeFirst('getByEmail', { email: req.body.email });
     // If something weird happens, abort.
     if (!user || !user.id) {
       throw { errno: 2002, code: 'ERROR_EMAIL_DOES_NOT_EXIST' };
     }
 
-    user.reset_password = crypto.randomBytes(16).toString('hex');
+    user.reset = crypto.randomBytes(16).toString('hex');
     await UsersModel.update(user);
     let log = await mail.send({
       view: 'forgot',
@@ -90,7 +90,7 @@ server.put('/users/forgot', async (req, res) => {
             '/#/users/reset/' +
             user.id +
             '/' +
-            user.reset_password
+            user.reset
         }
       }
     });
@@ -105,11 +105,11 @@ server.put('/users/forgot', async (req, res) => {
  */
 server.put('/users/reset', async (req, res) => {
   try {
-    const user = await UsersModel.getByIdAndResetPassword(req.body.id);
+    const user = await UsersModel.excecuteFirst('getByIdAndResetPassword', { id: req.body.id, reset: req.body.reset });
     // If something weird happens, abort.
     if (!user.id) throw { errno: 2000, code: 'ERROR_USER_NOT_FOUND' };
 
-    user.reset_password = '';
+    user.reset = '';
     user.password = req.body.password;
 
     await UsersModel.update(user);

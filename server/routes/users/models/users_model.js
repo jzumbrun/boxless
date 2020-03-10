@@ -25,8 +25,9 @@ class UsersModel extends Model {
       queries: [{ name, properties }],
       user: { id: -1, access: ['system'] }
     });
-
-    if (first) return results.queries[0].results[0];
+    if (results.queries[0].error)
+      throw results.queries[0].error.details.message
+    if (first) return results.queries[0].results[0] || {};
     else return results.queries[0].results;
   }
 
@@ -48,24 +49,11 @@ class UsersModel extends Model {
   }
 
   /**
-   * Get By Email
-   * @return promise
-   */
-  getByEmail(email = '') {
-    return this.queryFirst(
-      'SELECT id, name, email FROM users WHERE email = ?',
-      [email]
-    );
-  }
-
-  /**
    * Get by email and access
    * return promise
    */
   async getByEmailAndPassword(email, password) {
-    const user = await this.queryFirst('SELECT * FROM users WHERE email = ?', [
-      email
-    ]);
+    const user = await this.executeFirst('getByEmail', { email });
     const matches = this.passwordMatches(password, user);
     if (!user || !matches) throw 'ERROR_USER_NOT_FOUND';
     return user;
@@ -76,13 +64,18 @@ class UsersModel extends Model {
    * @return promise
    */
   async insert(name, email, password) {
-    const exists = await this.getByEmail(email);
+    const exists = await this.executeFirst('getByEmail', { email });
     if (exists.id) throw { errno: 2001, code: 'ERROR_EMAIL_EXISTS' };
     let hash = this.hashPassword(password);
-    return this.query(
-      'INSERT INTO users (name, email, password, salt, access) VALUES(?, ?, ?, ?, ?)',
-      [name, email, hash.password, hash.salt, JSON.stringify(['user'])]
-    );
+    return this.execute('insert', {
+      resource: {
+        name,
+        email,
+        password: hash.password,
+        salt: hash.salt,
+        access: JSON.stringify(['user'])
+      }
+    });
   }
 
   /**
@@ -91,7 +84,7 @@ class UsersModel extends Model {
    */
   async update(user) {
     if (user.email) {
-      let exists = await this.getByEmail(user.email);
+      const exists = await this.executeFirst('getByEmail', { email: user.email });
       if (exists && exists.id && exists.id != user.id) {
         throw { errno: 2001, code: 'ERROR_EMAIL_EXISTS' };
       }

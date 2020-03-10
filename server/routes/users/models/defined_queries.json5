@@ -19,6 +19,43 @@
         }
     },
     {
+        "name": "getByIdAndResetPassword",
+        "expression": "SELECT * from users WHERE id={{id}} AND reset={{reset}}",
+        "access": ["system"],
+        "inboundSchema": {
+            "type": "object",
+            "properties": {
+                "reset": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "number"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["id", "reset"]
+        }
+    },
+    {
+        "name": "getByEmail",
+        "expression": "SELECT {{: select}} from users WHERE email={{email}}",
+        "access": ["system"],
+        "inboundSchema": {
+            "type": "object",
+            "properties": {
+                "select": {
+                    "type": "string",
+                    "default": "*"
+                },
+                "email": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["email"]
+        }
+    },
+    {
         "name": "update",
         "expression": "UPDATE users SET {{resource}} WHERE id={{resource.id}}",
         "access": ["system"],
@@ -34,12 +71,36 @@
                         password: { "type": "string" },
                         salt: { "type": "string" },
                         access: { "type": "string" },
-                        reset_password: { "type": ["string", "null"] }
+                        reset: { "type": ["string", "null"] }
                     }
                 }
             },
             "additionalProperties": false,
             "required": ["id"]
+        }
+    },
+    {
+        "name": "insert",
+        "expression": "INSERT INTO users (name, email, password, salt, access) VALUES({{resource.name}}, {{resource.email}}, {{resource.password}}, {{resource.salt}}, {{resource.access}})",
+        "access": ["system"],
+        "inboundSchema": {
+            "type": "object",
+            "properties": {
+                "resource": {
+                    "type": "object",
+                    "properties": {
+                        name: { "type": "string" },
+                        email: { "type": "string" },
+                        password: { "type": "string" },
+                        salt: { "type": "string" },
+                        access: { "type": "string" }
+                    },
+                    "additionalProperties": false,
+                    "required": ["name", "email", "password", "salt", "access"]
+                }
+            },
+            "additionalProperties": false,
+            "required": ["resource"]
         }
     }
 ]

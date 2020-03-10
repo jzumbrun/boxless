@@ -162,7 +162,8 @@ describe('Users', () => {
 
     // it('reset wrong', (done) => {
     //     axios.put(util.buildUrl('users/reset'), {
-    //         email: 'triple@dude.com'
+    //         id: '2',
+    //         reset: '123'
     //     }).then((response) => {
     //         expect(response.status).toEqual(200)
     //         expect(response.data[0].details.from).toEqual('Supercontainer')

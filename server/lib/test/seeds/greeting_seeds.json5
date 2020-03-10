@@ -13,7 +13,7 @@
   },
   {
     "name": "users.create",
-    "expression": "CREATE TABLE users (id int(11) unsigned NOT NULL AUTO_INCREMENT, name varchar(200) DEFAULT NULL, email varchar(200) NOT NULL DEFAULT '', password char(128) DEFAULT NULL, salt char(32) DEFAULT NULL, access text DEFAULT NULL, reset_password char(32) DEFAULT NULL, created_at datetime DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+    "expression": "CREATE TABLE users (id int(11) unsigned NOT NULL AUTO_INCREMENT, name varchar(200) DEFAULT NULL, email varchar(200) NOT NULL DEFAULT '', password char(128) DEFAULT NULL, salt char(32) DEFAULT NULL, access text DEFAULT NULL, reset char(32) DEFAULT NULL, created_at datetime DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8"
   },
   {
     "name": "users.insert",
