@@ -11,18 +11,14 @@ server.put('/users/session', async (req, res) => {
     const user = await UsersModel.executeFirst('getById', { id: req.user.id });
     // If something weird happens, abort.
     if (!user.id) throw { errno: 2000, code: 'ERROR_USER_NOT_FOUND' };
+  
+    const updateUser = { id: user.id };
+    if (req.body.name) updateUser.name = req.body.name;
+    if (req.body.email) updateUser.email = req.body.email;
+    if (req.body.password) updateUser.password = req.body.password;
 
-    if (req.body.password) {
-      user.password = UsersModel.hashPassword(
-        req.body.password,
-        user.salt
-      ).password;
-    }
-
-    if (req.body.name) user.name = req.body.name;
-    if (req.body.name) user.email = req.body.email;
-    await UsersModel.update(user);
-    res.send({ token: UsersModel.token(user) });
+    await UsersModel.update(updateUser);
+    res.send({ token: UsersModel.token({...user, ...updateUser}) });
   } catch (error) {
     return res.status(422).send({ error });
   }
@@ -74,13 +70,15 @@ server.put('/users/forgot', async (req, res) => {
     if (!user || !user.id) {
       throw { errno: 2002, code: 'ERROR_EMAIL_DOES_NOT_EXIST' };
     }
-
-    user.reset = crypto.randomBytes(16).toString('hex');
-    await UsersModel.update(user);
+    const updateUser = {
+      id: user.id,
+      reset: crypto.randomBytes(16).toString('hex')
+    };
+    await UsersModel.update(updateUser);
     let log = await mail.send({
       view: 'forgot',
       message: {
-        subject: 'Contest Farm Password Reset',
+        subject: 'Super Container Password Reset',
         to: user.email,
         data: {
           name: user.name,
@@ -90,7 +88,7 @@ server.put('/users/forgot', async (req, res) => {
             '/#/users/reset/' +
             user.id +
             '/' +
-            user.reset
+            updateUser.reset
         }
       }
     });
@@ -105,16 +103,19 @@ server.put('/users/forgot', async (req, res) => {
  */
 server.put('/users/reset', async (req, res) => {
   try {
-    const user = await UsersModel.excecuteFirst('getByIdAndResetPassword', { id: req.body.id, reset: req.body.reset });
+    console.log('@@@reset@', req.body)
+    const user = await UsersModel.executeFirst('getByIdAndResetPassword', { id: req.body.id, reset: req.body.reset });
     // If something weird happens, abort.
     if (!user.id) throw { errno: 2000, code: 'ERROR_USER_NOT_FOUND' };
 
-    user.reset = '';
-    user.password = req.body.password;
-
-    await UsersModel.update(user);
+    await UsersModel.update({
+      id: user.id,
+      reset: '',
+      password: req.body.password
+    });
     res.send({ token: UsersModel.token(user) });
   } catch (error) {
+
     return res.status(422).send({ error });
   }
 });

@@ -20,11 +20,15 @@
     },
     {
         "name": "getByIdAndResetPassword",
-        "expression": "SELECT * from users WHERE id={{id}} AND reset={{reset}}",
+        "expression": "SELECT {{: select}} from users WHERE id={{id}} AND reset={{reset}}",
         "access": ["system"],
         "inboundSchema": {
             "type": "object",
             "properties": {
+                "select": {
+                    "type": "string",
+                    "default": "*"
+                },
                 "reset": {
                     "type": "string"
                 },

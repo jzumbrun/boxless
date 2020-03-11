@@ -25,8 +25,9 @@ class UsersModel extends Model {
       queries: [{ name, properties }],
       user: { id: -1, access: ['system'] }
     });
-    if (results.queries[0].error)
-      throw results.queries[0].error.details.message
+    if (results.queries[0].error) {
+      throw results.queries[0].error.details[0]
+    }
     if (first) return results.queries[0].results[0] || {};
     else return results.queries[0].results;
   }
@@ -89,6 +90,12 @@ class UsersModel extends Model {
         throw { errno: 2001, code: 'ERROR_EMAIL_EXISTS' };
       }
     }
+
+    if(user.password) {
+      let hash = this.hashPassword(user.password);
+      user.password = hash.password;
+      user.salt = hash.salt;
+    }
     return this.execute('update', { id: user.id, resource: user });
   }
 
@@ -121,6 +128,7 @@ class UsersModel extends Model {
     return jwt.sign(
       {
         id: user.id,
+        name: user.name,
         email: user.email,
         access: JSON.parse(user.access)
       },
