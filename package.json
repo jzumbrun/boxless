@@ -1,7 +1,7 @@
 {
   "name": "@elseblock/supercontainer",
   "version": "0.2.1",
-  "description": "MySQL paralell request api, using plain SQL statements built by handlebar templates, validated by json schema.",
+  "description": "SQL paralell request api, using plain SQL statements built by handlebar templates, validated by json schema.",
   "main": "./server/supercontainer.js",
   "repository": {
     "type": "git",
@@ -18,5 +18,7 @@
   "license": "MIT",
   "dependencies": {},
   "peerDependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "standard": "*"
+  }
 }

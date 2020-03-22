@@ -2,7 +2,7 @@
 
 ![Supercontainer](https://github.com/jzumbrun/Supercontainer-app/blob/master/public/assets/images/logo.svg?sanitize=1)
 
-Supercontainer is a logic-less MySQL paralell request api, using plain SQL statements built by handlebar templates, validated by json schema.
+Supercontainer is a logic-less SQL paralell request api, using plain SQL statements built by handlebar templates, validated by json schema.
 Supercontainer's goal is to simplify Single Page Application server data retrieval and storage.
 
 Supercontainer, inspired by GraphQL, can wrap up multiple resource requests and mutations into one api call. Thus reducing

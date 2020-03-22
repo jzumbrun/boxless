@@ -1,33 +1,33 @@
-const config = require('@app/config'),
-  mysql = require('mysql');
+const config = require('@app/config')
+const sqlite3 = require('sqlite3').verbose()
 
 class Database {
-  constructor() {
-    this._pool = {};
-    this._connect();
-    this._connection = null;
+  constructor () {
+    this._connect()
+    this._connection = {}
   }
 
-  getPool() {
-    return this._pool;
+  _getName (name) {
+    return name || config.db.name
   }
 
-  getConnection() {
+  async getConnection (name) {
+    name = this._getName(name)
     // Check request cache
-    if (this._connection) return this._connection;
-    return new Promise((resolve, reject) => {
-      this._pool.getConnection((connection_error, connection) => {
-        if (connection_error) return reject(connection_error);
-        // Set to request cache
-        this._connection = connection;
-        return resolve(connection);
-      });
-    });
+    if (this._connection[name]) return this._connection[name]
+    await this._connect(name)
+    return this._connection[name]
   }
 
-  _connect() {
-    this._pool = mysql.createPool(config.db);
+  _connect (name) {
+    name = this._getName(name)
+    return new Promise((resolve, reject) => {
+      this._connection[name] = new sqlite3.Database(`./dbs/${name}.db`, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (error) => {
+        if (error) reject(error)
+        else resolve()
+      })
+    })
   }
 }
 
-module.exports = new Database();
+module.exports = new Database()

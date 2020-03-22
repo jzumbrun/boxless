@@ -1,2 +1,9 @@
 node_modules
+server/node_modules
+client/node_modules
 npm-debug.logs
+.git
+Dockerfile
+.DS_Store
+.gitignore
+README.md

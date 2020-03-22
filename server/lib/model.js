@@ -1,17 +1,12 @@
-const Database = require('@app/lib/database');
+const Database = require('@app/lib/database')
 
 class Model {
-  constructor() {
-    this._db = Database;
-    this._pool = this._db.getPool();
+  constructor () {
+    this._db = Database
   }
 
-  getPool() {
-    return this._pool;
-  }
-
-  getConnection() {
-    return this._db.getConnection();
+  getConnection () {
+    return this._db.getConnection()
   }
 
   /**
@@ -19,16 +14,16 @@ class Model {
    * @param {string} sql
    * @param {object} values
    */
-  async query(sql, values = [], options = {}) {
-    const connection = await this.getConnection();
+  async query (sql, values = [], options = {}) {
+    const connection = this.getConnection()
     return new Promise((resolve, reject) => {
-      connection.query(sql, values, (error, rows) => {
-        if (error) reject(error);
-        else if (options.first && rows[0]) resolve(rows[0]);
-        else if (options.first) resolve({});
-        else resolve(rows);
-      });
-    });
+      connection.all(sql, values, (error, rows) => {
+        if (error) reject(error)
+        else if (options.first && rows[0]) resolve(rows[0])
+        else if (options.first) resolve({})
+        else resolve(rows)
+      })
+    })
   }
 
   /**
@@ -36,18 +31,18 @@ class Model {
    * @param {string} sql
    * @param {object} values
    */
-  queryFirst(sql, values = []) {
-    return this.query(sql, values, { first: true });
+  queryFirst (sql, values = []) {
+    return this.query(sql, values, { first: true })
   }
 
-  async release() {
+  async release () {
     try {
-      const connection = await this.getConnection();
-      connection.release();
+      const connection = this.getConnection()
+      connection.close()
     } catch (error) {
       // Just ignore the error
     }
   }
 }
 
-module.exports = Model;
+module.exports = Model

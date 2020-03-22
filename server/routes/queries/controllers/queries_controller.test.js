@@ -1,24 +1,25 @@
-const axios = require('axios');
-const expect = require('expect');
-const util = require('@app/lib/test/util');
-const seeder = require('@app/lib/test/seeder');
+const { describe, it } = require('mocha')
+const axios = require('axios')
+const expect = require('expect')
+const util = require('@app/lib/test/util')
+const seeder = require('@app/lib/test/seeder')
 
 describe('Seed', () => {
   it('seeding', done => {
     seeder
       .seed('greeting')
       .then(() => {
-        done();
+        done()
       })
       .catch(error => {
-        done(error);
-      });
-  });
-});
+        done(error)
+      })
+  })
+})
 
 describe('Queries', () => {
   describe('greetings', () => {
-    let url = util.buildUrl('query');
+    const url = util.buildUrl('query')
 
     it('set token', done => {
       axios
@@ -29,13 +30,13 @@ describe('Queries', () => {
         .then(response => {
           axios.defaults.headers.common = {
             Authorization: `Bearer ${response.data.token}`
-          };
-          done();
+          }
+          done()
         })
         .catch(error => {
-          done(error);
-        });
-    });
+          done(error)
+        })
+    })
 
     it('insert bad greetings properties', done => {
       axios
@@ -50,7 +51,7 @@ describe('Queries', () => {
           ]
         })
         .then(response => {
-          expect(response.status).toEqual(200);
+          expect(response.status).toEqual(200)
           expect(response.data.queries).toEqual([
             {
               name: 'greetings.insert',
@@ -70,13 +71,13 @@ describe('Queries', () => {
                 errno: 1004
               }
             }
-          ]);
-          done();
+          ])
+          done()
         })
         .catch(error => {
-          done(error);
-        });
-    });
+          done(error)
+        })
+    })
 
     it('insert missing name greetings', done => {
       axios
@@ -90,7 +91,7 @@ describe('Queries', () => {
           ]
         })
         .then(response => {
-          expect(response.status).toEqual(200);
+          expect(response.status).toEqual(200)
           expect(response.data.queries).toEqual([
             {
               name: 'ERROR_MISSING_NAME',
@@ -99,13 +100,13 @@ describe('Queries', () => {
                 errno: 1002
               }
             }
-          ]);
-          done();
+          ])
+          done()
         })
         .catch(error => {
-          done(error);
-        });
-    });
+          done(error)
+        })
+    })
 
     it('insert missing expression in definition', done => {
       axios
@@ -117,7 +118,7 @@ describe('Queries', () => {
           ]
         })
         .then(response => {
-          expect(response.status).toEqual(200);
+          expect(response.status).toEqual(200)
           expect(response.data.queries).toEqual([
             {
               details: 'ER_EMPTY_QUERY: Query was empty',
@@ -127,13 +128,13 @@ describe('Queries', () => {
               },
               name: 'missing.expression'
             }
-          ]);
-          done();
+          ])
+          done()
         })
         .catch(error => {
-          done(error);
-        });
-    });
+          done(error)
+        })
+    })
 
     it('insert greetings', done => {
       axios
@@ -156,7 +157,7 @@ describe('Queries', () => {
           ]
         })
         .then(response => {
-          expect(response.status).toEqual(200);
+          expect(response.status).toEqual(200)
           expect(response.data.queries).toEqual([
             {
               name: 'greetings.insert',
@@ -184,13 +185,13 @@ describe('Queries', () => {
                 warningCount: 0
               }
             }
-          ]);
-          done();
+          ])
+          done()
         })
         .catch(error => {
-          done(error);
-        });
-    });
+          done(error)
+        })
+    })
 
     it('greetings.select.after.insert', done => {
       axios
@@ -206,19 +207,19 @@ describe('Queries', () => {
           ]
         })
         .then(response => {
-          expect(response.status).toEqual(200);
+          expect(response.status).toEqual(200)
           expect(response.data.queries).toEqual([
             {
               name: 'greetings.select.byDescription',
               results: [{ id: 1, description: 'kind', words: 'hello' }]
             }
-          ]);
-          done();
+          ])
+          done()
         })
         .catch(error => {
-          done(error);
-        });
-    });
+          done(error)
+        })
+    })
 
     it('greetings.update', done => {
       axios
@@ -241,7 +242,7 @@ describe('Queries', () => {
           ]
         })
         .then(response => {
-          expect(response.status).toEqual(200);
+          expect(response.status).toEqual(200)
           expect(response.data.queries).toEqual([
             {
               name: 'greetings.update',
@@ -269,13 +270,13 @@ describe('Queries', () => {
                 changedRows: 1
               }
             }
-          ]);
-          done();
+          ])
+          done()
         })
         .catch(error => {
-          done(error);
-        });
-    });
+          done(error)
+        })
+    })
 
     it('greetings.select.after.update', done => {
       axios
@@ -291,7 +292,7 @@ describe('Queries', () => {
           ]
         })
         .then(response => {
-          expect(response.status).toEqual(200);
+          expect(response.status).toEqual(200)
           expect(response.data.queries).toEqual([
             {
               name: 'greetings.select',
@@ -300,13 +301,13 @@ describe('Queries', () => {
                 { description: 'chill', words: 'yo' }
               ]
             }
-          ]);
-          done();
+          ])
+          done()
         })
         .catch(error => {
-          done(error);
-        });
-    });
+          done(error)
+        })
+    })
 
     it('greetings.delete', done => {
       axios
@@ -321,7 +322,7 @@ describe('Queries', () => {
           ]
         })
         .then(response => {
-          expect(response.status).toEqual(200);
+          expect(response.status).toEqual(200)
           expect(response.data.queries).toEqual([
             {
               name: 'greetings.delete',
@@ -336,13 +337,13 @@ describe('Queries', () => {
                 changedRows: 0
               }
             }
-          ]);
-          done();
+          ])
+          done()
         })
         .catch(error => {
-          done(error);
-        });
-    });
+          done(error)
+        })
+    })
 
     it('greetings.select.after.delete', done => {
       axios
@@ -358,31 +359,31 @@ describe('Queries', () => {
           ]
         })
         .then(response => {
-          expect(response.status).toEqual(200);
+          expect(response.status).toEqual(200)
           expect(response.data.queries).toEqual([
             {
               name: 'greetings.select',
               results: [{ id: 1, description: 'nice', words: 'hello' }]
             }
-          ]);
-          done();
+          ])
+          done()
         })
         .catch(error => {
-          done(error);
-        });
-    });
-  });
-});
+          done(error)
+        })
+    })
+  })
+})
 
 describe('Deseed', () => {
   it('deseeding', done => {
     seeder
       .deseed('greeting')
       .then(() => {
-        done();
+        done()
       })
       .catch(error => {
-        done(error);
-      });
-  });
-});
+        done(error)
+      })
+  })
+})

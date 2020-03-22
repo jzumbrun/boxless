@@ -1,6 +1,4 @@
 DOCKERCOMMANDAPP := docker exec app bash -c
-DOCKERCOMMANDMYSQL := docker exec mysql bash -c
-
 
 help:
 	@echo ""
@@ -39,8 +37,6 @@ start: logs/clear watch
 	@docker-compose up -d
 	@${DOCKERCOMMANDAPP} "cd ./server && npm ci"
 	@${DOCKERCOMMANDAPP} "pm2 start dev.json"
-	@${DOCKERCOMMANDMYSQL} "mysql -uroot -p'b33pb00p' -e 'CREATE DATABASE test;'"
-	@${DOCKERCOMMANDMYSQL} "mysql -uroot -p'b33pb00p' -e 'GRANT ALL PRIVILEGES ON test.* TO \"supercontainer\"@\"%\";'"
 
 restart:
 	@echo 'Starting docker...'
@@ -85,7 +81,7 @@ server/seed:
 	@${DOCKERCOMMANDAPP} "node ./server/lib/test/seed.js"
 
 code/lint:
-	@${DOCKERCOMMANDAPP} "prettier --single-quote --write 'server/**/*.js'"
+	@${DOCKERCOMMANDAPP} "standard --fix"
 
 code/supersequel:
 	@${DOCKERCOMMANDAPP} "node ./server/lib/test/supersequel.js"

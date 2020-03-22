@@ -23,7 +23,7 @@
     <div class="callout large">
       <div class="row column text-center">
         <h1>/*supercontainer*/</h1>
-        <p class="lead">Minimalistic MySql Api</p>
+        <p class="lead">Minimalistic Sql Api</p>
         <a href="#" class="button large hollow">Tutorials</a>
         <a href="#" class="button large">Source</a>
       </div>
@@ -31,7 +31,7 @@
 
     <div class="row">
       <div class="medium-12 columns">
-        <h3>@#$</h3>
+        <h3>{{}}</h3>
         <p>One endpoint. Write SQL. No server code.</p>
       </div>
     </div>
@@ -42,8 +42,25 @@
       <div class="medium-12 columns">
         <h3>Allow Queries JSON</h3>
         <code class="html">
-        {
-            "greetings": "SELECT /*#select*/ FROM greetings WHERE greeting=/*$greeting*/ AND account_id=/*@account_id*/ LIMIT /*$limit*/"
+          {
+            "name": "greetings.select",
+            "expression": "SELECT {{: select}} FROM greetings WHERE user_id={{$user.id}} LIMIT {{limit}}",
+            "access": ["user"],
+            "inboundSchema": {
+                "type": "object",
+                "properties": {
+                    "select": {
+                        "type": "array",
+                        "default": ["*"]
+                    },
+                    "limit": {
+                        "type": "number",
+                        "maximum": 200,
+                        "default": 200
+                    }
+                },
+                "additionalProperties": false
+            }
         }
         </code>
       </div>
@@ -56,17 +73,13 @@
         <h3>JSON POST</h3>
         <code class="html">
           {
-            "queries": [
-            {
-                "name": "greetings",
-                "properties": {
-                "#select": "*",
-                "$greeting": "Hello Mates!",
-                "@account_id": "123",
-                "$limit": "1"
-                }
-            }
-            ]
+            queries: [{
+              name: 'greetings.select',
+              properties: {
+                select: ['id', 'description', 'words'],
+                limit: 2
+              }
+            }]
           }
         </code>
       </div>

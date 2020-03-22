@@ -1,17 +1,11 @@
-const config = {};
+const config = {}
 
 /** DEFAULTS **/
 config.defaults = {
   port: 8081,
   db: {
-    connectionLimit: 50,
-    host: 'db',
-    user: 'supercontainer',
-    password: '#!supercontainer321321',
-    database: 'supercontainer',
-    dateStrings: true
+    name: 'development'
   },
-
   mailProvider: {
     smtp: {
       service: '',
@@ -32,34 +26,38 @@ config.defaults = {
     '/users/reset',
     '/users/forgot'
   ]
-};
+}
 
 /** DEVELOPMENT **/
-config.development = {
-  port: 8081
-};
+config.development = {}
 
 /** TESTING **/
 config.testing = {
   db: {
-    host: 'db',
-    database: 'test',
-    dateStrings: true
+    name: 'test'
   },
   mailProvider: {
     smtp: null
   }
-};
+}
 
 /** STAGING **/
-config.staging = {};
+config.staging = {
+  db: {
+    name: 'staging'
+  }
+}
 
 /** PRODUCTION **/
-config.production = {};
+config.production = {
+  db: {
+    name: 'production'
+  }
+}
 
 /* !!! DONT CHANGE THIS LINE !!! */
-module.exports = new (function() {
+module.exports = new function () {
   process.env.NODE_ENV = config.defaults.env =
-    process.env.NODE_ENV || require('./.env');
-  return require('lodash').merge(config.defaults, config[config.defaults.env]);
-})();
+    process.env.NODE_ENV || require('./.env')
+  return require('lodash').merge(config.defaults, config[config.defaults.env])
+}()
