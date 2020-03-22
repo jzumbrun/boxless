@@ -15,7 +15,7 @@ Each query request requires a name, an optional id, sync and properties object (
 
 id: Required if querying for same query name multiple times, or if accessing previous query response history.
 name: The name is used to find the defined query name.
-properties: Data values supplied to the expression query string.
+properties: Data values supplied to the statement query string.
 sync: Sync will force an async/await on the query. All synced queries will load first no matter the request order.
 
 ```
@@ -38,10 +38,10 @@ sync: Sync will force an async/await on the query. All synced queries will load 
 ```
 
 ## Server defined queries
-Each query is given a name, an SQL expression, an access list, and an inbound schema.
+Each query is given a name, an SQL statement, an access list, and an inbound schema.
 
 Name: Name should reflect the resource and action. This is only a convention. But it must be unique.
-expression: The expression is a simple SQL statement managed by handlebars. Handlebars will take care of sql injections.
+statement: The statement is a simple SQL statement managed by handlebars. Handlebars will take care of sql injections.
     We have take the liberty to add all lodash functions to handlebars for convenience. That are defined as `_trim`, etc.
     Each property from the client request will be available to use in the query statement as well as a user object
     that is provided by Supercontainer via a signin gateway and JWT tokens.
@@ -57,7 +57,7 @@ outboundSchema: Outbound schema utilizes json schema and validates data coming f
     "id": "greetings.insert",
     "name": "greetings.insert",
     sync: true,
-    "expression": "INSERT INTO greetings (description, words, user_id) VALUES ('{{description}}', '{{words}}', {{$user.id}})",
+    "statement": "INSERT INTO greetings (description, words, user_id) VALUES ('{{description}}', '{{words}}', {{$user.id}})",
     "access": ["user"],
     "inboundSchema": {
         "type": "object",
@@ -77,7 +77,7 @@ outboundSchema: Outbound schema utilizes json schema and validates data coming f
 {
     "name": "greetings.select.byId",
     sync: true,
-    "expression": "SELECT {{select}} FROM greetings WHERE user_id={{$user.id}} AND id={{$history.[greetings.insert].id}} LIMIT {{limit}}",
+    "statement": "SELECT {{select}} FROM greetings WHERE user_id={{$user.id}} AND id={{$history.[greetings.insert].id}} LIMIT {{limit}}",
     "access": ["user"],
     "inboundSchema": {
         "type": "object",

@@ -1,7 +1,7 @@
 [
     {
         "name": "getById",
-        "expression": "SELECT {{: select}} from users WHERE id={{id}}",
+        "statement": "SELECT {{: select}} from users WHERE id={{id}}",
         "access": ["system"],
         "inboundSchema": {
             "type": "object",
@@ -20,7 +20,7 @@
     },
     {
         "name": "getByIdAndResetPassword",
-        "expression": "SELECT {{: select}} from users WHERE id={{id}} AND reset={{reset}}",
+        "statement": "SELECT {{: select}} from users WHERE id={{id}} AND reset={{reset}}",
         "access": ["system"],
         "inboundSchema": {
             "type": "object",
@@ -42,7 +42,7 @@
     },
     {
         "name": "getByEmail",
-        "expression": "SELECT {{: select}} from users WHERE email={{email}}",
+        "statement": "SELECT {{: select}} from users WHERE email={{email}}",
         "access": ["system"],
         "inboundSchema": {
             "type": "object",
@@ -61,7 +61,7 @@
     },
     {
         "name": "update",
-        "expression": "UPDATE users SET {{resource}} WHERE id={{resource.id}}",
+        "statement": "UPDATE users SET {{resource}} WHERE id={{resource.id}}",
         "access": ["system"],
         "inboundSchema": {
             "type": "object",
@@ -85,7 +85,7 @@
     },
     {
         "name": "insert",
-        "expression": "INSERT INTO users (name, email, password, salt, access) VALUES({{resource.name}}, {{resource.email}}, {{resource.password}}, {{resource.salt}}, {{resource.access}})",
+        "statement": "INSERT INTO users (name, email, password, salt, access) VALUES({{resource.name}}, {{resource.email}}, {{resource.password}}, {{resource.salt}}, {{resource.access}})",
         "access": ["system"],
         "inboundSchema": {
             "type": "object",

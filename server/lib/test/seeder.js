@@ -5,7 +5,7 @@ module.exports.seed = async seed => {
   console.log('   Seeding for', process.env.NODE_ENV)
   for (const query of seeds) {
     try {
-      await QueriesModel.query(query.expression)
+      await QueriesModel.query(query.statement)
     } catch (error) {
       console.log('   ', query.name, error)
     }
@@ -19,7 +19,7 @@ module.exports.deseed = async seed => {
   console.log('   Deseeding for', process.env.NODE_ENV)
   for (const query of deseeds) {
     try {
-      await QueriesModel.query(query.expression)
+      await QueriesModel.query(query.statement)
     } catch (error) {
       console.log('   ', query.name, error)
     }

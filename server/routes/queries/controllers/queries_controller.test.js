@@ -108,12 +108,12 @@ describe('Queries', () => {
         })
     })
 
-    it('insert missing expression in definition', done => {
+    it('insert missing statement in definition', done => {
       axios
         .post(url, {
           queries: [
             {
-              name: 'missing.expression'
+              name: 'missing.statement'
             }
           ]
         })
@@ -126,7 +126,7 @@ describe('Queries', () => {
                 code: 'ERROR_IMPROPER_QUERY_STATEMENT',
                 errno: 1006
               },
-              name: 'missing.expression'
+              name: 'missing.statement'
             }
           ])
           done()

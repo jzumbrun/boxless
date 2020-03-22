@@ -1,6 +1,6 @@
 [
   {
     "name": "users.truncate",
-    "expression": "TRUNCATE TABLE users"
+    "statement": "TRUNCATE TABLE users"
   }
 ]

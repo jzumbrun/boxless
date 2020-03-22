@@ -3,7 +3,7 @@
     "./",
     {
       "name": "rebuild",
-      "expression": [
+      "statement": [
         "anyof",
         ["dirname", "server/lib"],
         ["dirname", "server/routes"],

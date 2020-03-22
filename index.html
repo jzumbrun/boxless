@@ -44,7 +44,7 @@
         <code class="html">
           {
             "name": "greetings.select",
-            "expression": "SELECT {{: select}} FROM greetings WHERE user_id={{$user.id}} LIMIT {{limit}}",
+            "statement": "SELECT {{: select}} FROM greetings WHERE user_id={{$user.id}} LIMIT {{limit}}",
             "access": ["user"],
             "inboundSchema": {
                 "type": "object",
