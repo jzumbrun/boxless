@@ -1,10 +1,10 @@
 [
   {
     "name": "greetings.truncate",
-    "statement": "TRUNCATE TABLE greetings"
+    "statement": "DELETE FROM greetings"
   },
   {
     "name": "users.truncate",
-    "statement": "TRUNCATE TABLE users"
+    "statement": "DELETE FROM users"
   }
 ]

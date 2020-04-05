@@ -1,11 +1,11 @@
 {
-  "name": "@elseblock/supercontainer",
+  "name": "@elseblock/boxless",
   "version": "0.2.1",
   "description": "SQL paralell request api, using plain SQL statements built by handlebar templates, validated by json schema.",
-  "main": "./server/supercontainer.js",
+  "main": "./server/app.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jzumbrun/supercapacitor.git"
+    "url": "https://github.com/jzumbrun/boxless.git"
   },
   "scripts": {},
   "keywords": [
@@ -20,5 +20,10 @@
   "peerDependencies": {},
   "devDependencies": {
     "standard": "*"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ]
   }
 }

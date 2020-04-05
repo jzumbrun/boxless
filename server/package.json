@@ -1,9 +1,8 @@
 {
-  "name": "supercontainer",
+  "name": "boxless",
   "private": true,
-  "version": "0.1.0",
-  "description": "supercontainer.com",
-  "author": "supercontainer (Jon Zumbrun)",
+  "description": "boxless.com",
+  "author": "boxless (Jon Zumbrun)",
   "main": "server/app.js",
   "scripts": {
     "start": "node server/app.js"
@@ -16,7 +15,7 @@
     "@app": "."
   },
   "dependencies": {
-    "@elseblock/supersequel": "*",
+    "@elseblock/supersequel": "^0.2.4",
     "body-parser": "1.19.0",
     "compression": "1.7.4",
     "express": "4.17.1",

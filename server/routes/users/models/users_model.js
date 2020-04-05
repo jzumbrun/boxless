@@ -9,9 +9,7 @@ const definitions = require('@app/routes/users/models/defined_queries.json5')
 const supersequel = require('@elseblock/supersequel')({
   helpers: [{ functions: _, prefix: '_' }],
   definitions: definitions,
-  query: query => {
-    return module.exports.query(query)
-  }
+  query: query => module.exports.query(query)
 })
 
 class UsersModel extends Model {
@@ -25,6 +23,7 @@ class UsersModel extends Model {
       queries: [{ name, properties }],
       user: { id: -1, access: ['system'] }
     })
+
     if (results.queries[0].error) {
       throw results.queries[0].error.details[0]
     }
@@ -66,7 +65,7 @@ class UsersModel extends Model {
    */
   async insert (name, email, password) {
     const exists = await this.executeFirst('getByEmail', { email })
-    if (exists.id) throw Error({ errno: 2001, code: 'ERROR_EMAIL_EXISTS' })
+    if (exists.id) throw { errno: 2001, code: 'ERROR_EMAIL_EXISTS' } // eslint-disable-line
     const hash = this.hashPassword(password)
     return this.execute('insert', {
       resource: {
@@ -74,7 +73,7 @@ class UsersModel extends Model {
         email,
         password: hash.password,
         salt: hash.salt,
-        access: JSON.stringify(['user'])
+        access: ['user']
       }
     })
   }
@@ -87,7 +86,7 @@ class UsersModel extends Model {
     if (user.email) {
       const exists = await this.executeFirst('getByEmail', { email: user.email })
       if (exists && exists.id && exists.id !== user.id) {
-        throw Error({ errno: 2001, code: 'ERROR_EMAIL_EXISTS' })
+        throw { errno: 2001, code: 'ERROR_EMAIL_EXISTS' } // eslint-disable-line
       }
     }
 

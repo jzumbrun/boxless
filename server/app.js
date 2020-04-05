@@ -1,6 +1,7 @@
 require('module-alias/register')
 require('json5/lib/register')
 
+const express = require('express')
 const parser = require('body-parser')
 const compression = require('compression')
 const jwt = require('express-jwt')
@@ -66,6 +67,12 @@ class App {
     server.use(compression())
     server.use(parser.json())
     server.use(parser.urlencoded({ extended: true }))
+
+    server.enable('trust proxy')
+    server.use(express.static(`${config.base}/public`))
+
+    // Serve the entry point
+    server.get('/', (req, res) => res.sendFile(`${config.base}/public/index.html`))
 
     // We are going to protect routes with JWT
     server.use(

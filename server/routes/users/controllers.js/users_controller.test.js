@@ -1,4 +1,3 @@
-const { describe, it } = require('mocha')
 const { get } = require('lodash')
 const axios = require('axios')
 const expect = require('expect')
@@ -10,7 +9,7 @@ function getUserFromToken (token) {
   return JSON.parse(token)
 }
 
-describe('Seed', () => {
+describe.only('Seed', () => {
   it('seeding', done => {
     seeder
       .seed('user')
@@ -23,7 +22,7 @@ describe('Seed', () => {
   })
 })
 
-describe('Users', () => {
+describe.only('Users', () => {
   describe('management', () => {
     let reset
 
@@ -42,7 +41,7 @@ describe('Users', () => {
         })
     })
 
-    it('signup new user', done => {
+    it.only('signup new user', done => {
       axios
         .post(util.buildUrl('users/signup'), {
           name: 'Double Dude',
@@ -192,10 +191,10 @@ describe('Users', () => {
         })
         .then(response => {
           expect(response.status).toEqual(200)
-          expect(response.data[0].details.from).toEqual('Supercontainer')
+          expect(response.data[0].details.from).toEqual('boxless')
           expect(response.data[0].details.to).toEqual('triple@dude.com')
           expect(response.data[0].details.subject).toEqual(
-            'Super Container Password Reset'
+            'Bastion Base Password Reset'
           )
           expect(response.data[0].details.text).toContain(
             'http://localhost:8081/#/users/reset/2/'

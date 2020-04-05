@@ -10,7 +10,7 @@ server.put('/users/session', async (req, res) => {
   try {
     const user = await UsersModel.executeFirst('getById', { id: req.user.id })
     // If something weird happens, abort.
-    if (!user.id) throw Error({ errno: 2000, code: 'ERROR_USER_NOT_FOUND' })
+    if (!user.id) throw { errno: 2000, code: 'ERROR_USER_NOT_FOUND' } // eslint-disable-line
 
     const updateUser = { id: user.id }
     if (req.body.name) updateUser.name = req.body.name
@@ -33,6 +33,7 @@ server.put('/users/signin', async (req, res) => {
       req.body.email,
       req.body.password
     )
+
     res.send({ token: UsersModel.token(user) })
   } catch (err) {
     res.status(422).send({ errno: 2000, code: 'ERROR_USER_NOT_FOUND' })
@@ -68,7 +69,7 @@ server.put('/users/forgot', async (req, res) => {
     const user = await UsersModel.executeFirst('getByEmail', { email: req.body.email })
     // If something weird happens, abort.
     if (!user || !user.id) {
-      throw Error({ errno: 2002, code: 'ERROR_EMAIL_DOES_NOT_EXIST' })
+      throw { errno: 2002, code: 'ERROR_EMAIL_DOES_NOT_EXIST' } // eslint-disable-line
     }
     const updateUser = {
       id: user.id,
@@ -78,7 +79,7 @@ server.put('/users/forgot', async (req, res) => {
     const log = await mail.send({
       view: 'forgot',
       message: {
-        subject: 'Super Container Password Reset',
+        subject: 'Bastion Base Password Reset',
         to: user.email,
         data: {
           name: user.name,
@@ -106,7 +107,7 @@ server.put('/users/reset', async (req, res) => {
     console.log('@@@reset@', req.body)
     const user = await UsersModel.executeFirst('getByIdAndResetPassword', { id: req.body.id, reset: req.body.reset })
     // If something weird happens, abort.
-    if (!user.id) throw Error({ errno: 2000, code: 'ERROR_USER_NOT_FOUND' })
+    if (!user.id) throw { errno: 2000, code: 'ERROR_USER_NOT_FOUND' } // eslint-disable-line
 
     await UsersModel.update({
       id: user.id,

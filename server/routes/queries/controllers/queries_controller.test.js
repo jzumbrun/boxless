@@ -1,4 +1,3 @@
-const { describe, it } = require('mocha')
 const axios = require('axios')
 const expect = require('expect')
 const util = require('@app/lib/test/util')
@@ -121,7 +120,7 @@ describe('Queries', () => {
           expect(response.status).toEqual(200)
           expect(response.data.queries).toEqual([
             {
-              details: 'ER_EMPTY_QUERY: Query was empty',
+              details: 'SQLITE_MISUSE: not an error',
               error: {
                 code: 'ERROR_IMPROPER_QUERY_STATEMENT',
                 errno: 1006
@@ -162,27 +161,13 @@ describe('Queries', () => {
             {
               name: 'greetings.insert',
               results: {
-                affectedRows: 1,
-                changedRows: 0,
-                fieldCount: 0,
-                insertId: 1,
-                message: '',
-                protocol41: true,
-                serverStatus: 2,
-                warningCount: 0
+                insertId: 1
               }
             },
             {
               name: 'greetings.insert',
               results: {
-                affectedRows: 1,
-                changedRows: 0,
-                fieldCount: 0,
-                insertId: 2,
-                message: '',
-                protocol41: true,
-                serverStatus: 2,
-                warningCount: 0
+                insertId: 2
               }
             }
           ])
@@ -247,27 +232,13 @@ describe('Queries', () => {
             {
               name: 'greetings.update',
               results: {
-                fieldCount: 0,
-                affectedRows: 1,
-                insertId: 0,
-                serverStatus: 2,
-                warningCount: 0,
-                message: '(Rows matched: 1  Changed: 1  Warnings: 0',
-                protocol41: true,
-                changedRows: 1
+                insertId: 2
               }
             },
             {
               name: 'greetings.update',
               results: {
-                fieldCount: 0,
-                affectedRows: 1,
-                insertId: 0,
-                serverStatus: 2,
-                warningCount: 0,
-                message: '(Rows matched: 1  Changed: 1  Warnings: 0',
-                protocol41: true,
-                changedRows: 1
+                insertId: 2
               }
             }
           ])
@@ -327,14 +298,7 @@ describe('Queries', () => {
             {
               name: 'greetings.delete',
               results: {
-                fieldCount: 0,
-                affectedRows: 1,
-                insertId: 0,
-                serverStatus: 2,
-                warningCount: 0,
-                message: '',
-                protocol41: true,
-                changedRows: 0
+                insertId: 2
               }
             }
           ])

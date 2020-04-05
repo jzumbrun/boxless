@@ -1,0 +1,31 @@
+{
+  "name": "boxless",
+  "description": "",
+  "main": "webpack.config.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Superconainer",
+  "license": "MIT",
+  "bugs": {},
+  "homepage": "",
+  "dependencies": {
+    "classnames": "2.2.5",
+    "react": "16.4.1",
+    "react-dom": "^16.13.1",
+    "react-router": "4.3.1",
+    "react-router-dom": "4.3.1",
+    "supercapacitor": "^0.2.7",
+    "underscore": "1.8.3"
+  },
+  "devDependencies": {
+    "react-test-renderer": "15.4.2",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.39.3",
+    "webpack-cli": "3.1.0"
+  }
+}

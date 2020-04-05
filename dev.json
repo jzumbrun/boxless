@@ -1,8 +1,8 @@
 {
     "apps" : [{
-      "name"               : "supercontainer",
+      "name"               : "boxless",
       "script"             : "server/app.js",
-      "node_args"          : ["--inspect=0.0.0.0:5858"],
+      "node_args"          : ["--inspect=0.0.0.0:9229"],
       "exec_mode"          : "fork",
       "max_memory_restart" : "100M",
       "out_file"           : "/var/www/app/logs/server.log",

@@ -1,10 +1,11 @@
+const path = require('path')
 const config = require('@app/config')
 const sqlite3 = require('sqlite3').verbose()
 
 class Database {
   constructor () {
-    this._connect()
     this._connection = {}
+    this._connect()
   }
 
   _getName (name) {
@@ -19,14 +20,13 @@ class Database {
     return this._connection[name]
   }
 
-  _connect (name) {
+  async _connect (name) {
     name = this._getName(name)
-    return new Promise((resolve, reject) => {
-      this._connection[name] = new sqlite3.Database(`./dbs/${name}.db`, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (error) => {
-        if (error) reject(error)
-        else resolve()
-      })
-    })
+    try {
+      this._connection[name] = await new sqlite3.Database(path.resolve(__dirname, `../dbs/${name}.db`))
+    } catch (error) {
+      throw Error(error)
+    }
   }
 }
 

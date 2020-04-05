@@ -2,6 +2,7 @@ const config = {}
 
 /** DEFAULTS **/
 config.defaults = {
+  base: process.cwd(),
   port: 8081,
   db: {
     name: 'development'
@@ -14,7 +15,7 @@ config.defaults = {
         pass: ''
       }
     },
-    from: 'Supercontainer'
+    from: 'boxless'
   },
 
   secret: '4Rf3FFgtRgFg60KPM',
@@ -57,7 +58,6 @@ config.production = {
 
 /* !!! DONT CHANGE THIS LINE !!! */
 module.exports = new function () {
-  process.env.NODE_ENV = config.defaults.env =
-    process.env.NODE_ENV || require('./.env')
+  process.env.NODE_ENV = config.defaults.env = process.env.NODE_ENV || require('./.env')
   return require('lodash').merge(config.defaults, config[config.defaults.env])
 }()

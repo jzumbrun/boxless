@@ -41,3 +41,4 @@ jspm_packages
 .vscode/
 .vagrant/
 .env
+server/dbs/

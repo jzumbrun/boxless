@@ -15,14 +15,22 @@ class Model {
    * @param {object} values
    */
   async query (sql, values = [], options = {}) {
-    const connection = this.getConnection()
+    const connection = await this.getConnection()
     return new Promise((resolve, reject) => {
-      connection.all(sql, values, (error, rows) => {
-        if (error) reject(error)
-        else if (options.first && rows[0]) resolve(rows[0])
-        else if (options.first) resolve({})
-        else resolve(rows)
-      })
+      // Select statements
+      if (sql.toLowerCase().indexOf('select') === 0) {
+        connection.all(sql, values, function (error, rows) {
+          if (error) reject(error)
+          else if (options.first && rows[0]) resolve(rows[0])
+          else if (options.first) resolve({})
+          else resolve(rows)
+        })
+      } else { // All other statements
+        connection.run(sql, values, function (error) {
+          if (error) reject(error)
+          resolve({ insertId: this.lastID })
+        })
+      }
     })
   }
 
