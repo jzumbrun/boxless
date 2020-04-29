@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const nodemailer = require('nodemailer')
-const config = require('@app/config')
-const server = require('@app/lib/server')
+const config = require('../config')
+const server = require('./server')
 
 /**
  * Mailer

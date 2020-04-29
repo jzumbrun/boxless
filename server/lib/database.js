@@ -1,32 +1,32 @@
-const path = require('path')
-const config = require('@app/config')
-const sqlite3 = require('sqlite3').verbose()
+const config = require('../config')
+const mysql = require('mysql')
 
 class Database {
   constructor () {
-    this._connection = {}
+    this._pool = {}
     this._connect()
+    this._connection = null
   }
 
-  _getName (name) {
-    return name || config.db.name
+  getPool () {
+    return this._pool
   }
 
-  async getConnection (name) {
-    name = this._getName(name)
+  getConnection () {
     // Check request cache
-    if (this._connection[name]) return this._connection[name]
-    await this._connect(name)
-    return this._connection[name]
+    if (this._connection) return this._connection
+    return new Promise((resolve, reject) => {
+      this._pool.getConnection((connectionError, connection) => {
+        if (connectionError) return reject(connectionError)
+        // Set to request cache
+        this._connection = connection
+        return resolve(connection)
+      })
+    })
   }
 
-  async _connect (name) {
-    name = this._getName(name)
-    try {
-      this._connection[name] = await new sqlite3.Database(path.resolve(__dirname, `../dbs/${name}.db`))
-    } catch (error) {
-      throw Error(error)
-    }
+  _connect () {
+    this._pool = mysql.createPool(config.db)
   }
 }
 

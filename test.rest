@@ -1,7 +1,0 @@
-PUT http://127.0.0.1:8081/users/forgot
-content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJtYXN0ZXJAZHVkZS5jb20iLCJhY2Nlc3MiOlsidXNlciJdLCJpYXQiOjE1NzY0NjEwMDUsImV4cCI6MTY0MzU5MzgwNX0.kbAKkmX2rINhkaOaobqIPf2CknepTkh0l_Y_kchRaXs
-
-{
-    "email": "nothing@nothing.com"
-}

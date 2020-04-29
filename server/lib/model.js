@@ -1,8 +1,13 @@
-const Database = require('@app/lib/database')
+const Database = require('./database')
 
 class Model {
   constructor () {
     this._db = Database
+    this._pool = this._db.getPool()
+  }
+
+  getPool () {
+    return this._pool
   }
 
   getConnection () {
@@ -17,20 +22,12 @@ class Model {
   async query (sql, values = [], options = {}) {
     const connection = await this.getConnection()
     return new Promise((resolve, reject) => {
-      // Select statements
-      if (sql.toLowerCase().indexOf('select') === 0) {
-        connection.all(sql, values, function (error, rows) {
-          if (error) reject(error)
-          else if (options.first && rows[0]) resolve(rows[0])
-          else if (options.first) resolve({})
-          else resolve(rows)
-        })
-      } else { // All other statements
-        connection.run(sql, values, function (error) {
-          if (error) reject(error)
-          resolve({ insertId: this.lastID })
-        })
-      }
+      connection.query(sql, values, (error, rows) => {
+        if (error) reject(error)
+        else if (options.first && rows[0]) resolve(rows[0])
+        else if (options.first) resolve({})
+        else resolve(rows)
+      })
     })
   }
 
@@ -45,8 +42,8 @@ class Model {
 
   async release () {
     try {
-      const connection = this.getConnection()
-      connection.close()
+      const connection = await this.getConnection()
+      connection.release()
     } catch (error) {
       // Just ignore the error
     }

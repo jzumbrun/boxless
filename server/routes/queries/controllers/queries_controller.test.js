@@ -1,7 +1,7 @@
 const axios = require('axios')
 const expect = require('expect')
-const util = require('@app/lib/test/util')
-const seeder = require('@app/lib/test/seeder')
+const util = require('../../../lib/test/util')
+const seeder = require('../../../lib/test/seeder')
 
 describe('Seed', () => {
   it('seeding', done => {
@@ -120,7 +120,7 @@ describe('Queries', () => {
           expect(response.status).toEqual(200)
           expect(response.data.queries).toEqual([
             {
-              details: 'SQLITE_MISUSE: not an error',
+              details: 'ER_EMPTY_QUERY: Query was empty',
               error: {
                 code: 'ERROR_IMPROPER_QUERY_STATEMENT',
                 errno: 1006
@@ -161,13 +161,27 @@ describe('Queries', () => {
             {
               name: 'greetings.insert',
               results: {
-                insertId: 1
+                affectedRows: 1,
+                changedRows: 0,
+                fieldCount: 0,
+                insertId: 1,
+                message: '',
+                protocol41: true,
+                serverStatus: 2,
+                warningCount: 0
               }
             },
             {
               name: 'greetings.insert',
               results: {
-                insertId: 2
+                affectedRows: 1,
+                changedRows: 0,
+                fieldCount: 0,
+                insertId: 2,
+                message: '',
+                protocol41: true,
+                serverStatus: 2,
+                warningCount: 0
               }
             }
           ])
@@ -232,13 +246,27 @@ describe('Queries', () => {
             {
               name: 'greetings.update',
               results: {
-                insertId: 2
+                affectedRows: 1,
+                changedRows: 1,
+                fieldCount: 0,
+                insertId: 0,
+                message: '(Rows matched: 1  Changed: 1  Warnings: 0',
+                protocol41: true,
+                serverStatus: 2,
+                warningCount: 0
               }
             },
             {
               name: 'greetings.update',
               results: {
-                insertId: 2
+                affectedRows: 1,
+                changedRows: 1,
+                fieldCount: 0,
+                insertId: 0,
+                message: '(Rows matched: 1  Changed: 1  Warnings: 0',
+                protocol41: true,
+                serverStatus: 2,
+                warningCount: 0
               }
             }
           ])
@@ -298,7 +326,14 @@ describe('Queries', () => {
             {
               name: 'greetings.delete',
               results: {
-                insertId: 2
+                affectedRows: 1,
+                changedRows: 0,
+                fieldCount: 0,
+                insertId: 0,
+                message: '',
+                protocol41: true,
+                serverStatus: 2,
+                warningCount: 0
               }
             }
           ])

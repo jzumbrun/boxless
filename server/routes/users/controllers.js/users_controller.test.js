@@ -1,15 +1,15 @@
 const { get } = require('lodash')
 const axios = require('axios')
 const expect = require('expect')
-const util = require('@app/lib/test/util')
-const seeder = require('@app/lib/test/seeder')
+const util = require('../../../lib/test/util')
+const seeder = require('../../../lib/test/seeder')
 
 function getUserFromToken (token) {
   token = Buffer.from(token.split('.')[1], 'base64').toString('utf-8')
   return JSON.parse(token)
 }
 
-describe.only('Seed', () => {
+describe('Seed', () => {
   it('seeding', done => {
     seeder
       .seed('user')
@@ -22,7 +22,7 @@ describe.only('Seed', () => {
   })
 })
 
-describe.only('Users', () => {
+describe('Users', () => {
   describe('management', () => {
     let reset
 
@@ -41,7 +41,7 @@ describe.only('Users', () => {
         })
     })
 
-    it.only('signup new user', done => {
+    it('signup new user', done => {
       axios
         .post(util.buildUrl('users/signup'), {
           name: 'Double Dude',
@@ -144,7 +144,7 @@ describe.only('Users', () => {
         })
         .catch(error => {
           expect(error.response.status).toEqual(422)
-          expect(error.response.data).toEqual({
+          expect(error.response.data.error).toEqual({
             errno: 2000,
             code: 'ERROR_USER_NOT_FOUND'
           })

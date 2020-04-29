@@ -2,8 +2,6 @@ import React from 'react'
 import _ from 'underscore'
 import AlertStore from '../stores/alert_store.js'
 
-console.log('@@REACT@@', React)
-
 class Alerts extends React.Component {
   constructor (props) {
     super(props)

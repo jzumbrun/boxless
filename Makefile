@@ -1,4 +1,5 @@
 DOCKERCOMMANDAPP := docker exec app bash -c
+DOCKERCOMMANDMYSQL := docker exec mysql bash -c
 
 help:
 	@echo ""
@@ -41,6 +42,8 @@ start: logs/clear
 	@docker-compose up -d
 	@${DOCKERCOMMANDAPP} "cd ./server && npm ci"
 	@${DOCKERCOMMANDAPP} "pm2 start dev.json"
+	@${DOCKERCOMMANDMYSQL} "mysql -uroot -p'b33pb00p' -e 'CREATE DATABASE test;'"	
+	@${DOCKERCOMMANDMYSQL} "mysql -uroot -p'b33pb00p' -e 'GRANT ALL PRIVILEGES ON test.* TO \"boxless\"@\"%\";'"
 
 restart:
 	@echo 'Starting docker...'
@@ -104,7 +107,7 @@ code/lint:
 
 test/all:
 	# @echo 'Restarting express server in testing env...'
-	# @${DOCKERCOMMANDAPP} "NODE_ENV=testing pm2 start dev.json"
+	@${DOCKERCOMMANDAPP} "NODE_ENV=testing pm2 start dev.json"
 	-@${DOCKERCOMMANDAPP} "NODE_ENV=testing mocha ./server/routes/**/*.test.js --exit --config ./server/lib/test/config.js"
-	# @echo 'Restarting express server in development env...'
-	# @${DOCKERCOMMANDAPP} "NODE_ENV=development pm2 start dev.json"
+	@echo 'Restarting express server in development env...'
+	@${DOCKERCOMMANDAPP} "NODE_ENV=development pm2 start dev.json"

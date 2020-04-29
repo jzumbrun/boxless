@@ -1,5 +1,5 @@
 const glob = require('glob')
-const server = require('@app/lib/server')
+const server = require('./server')
 
 /**
  * Layout

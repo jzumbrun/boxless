@@ -1,7 +1,7 @@
 const crypto = require('crypto')
-const Mailer = require('@app/lib/mailer')
-const server = require('@app/lib/server')
-const UsersModel = require('@app/routes/users/models/users_model')
+const Mailer = require('../../../lib/mailer')
+const server = require('../../../lib/server')
+const UsersModel = require('../models/users_model')
 
 /**
  * Update Session User
@@ -35,8 +35,8 @@ server.put('/users/signin', async (req, res) => {
     )
 
     res.send({ token: UsersModel.token(user) })
-  } catch (err) {
-    res.status(422).send({ errno: 2000, code: 'ERROR_USER_NOT_FOUND' })
+  } catch (error) {
+    return res.status(422).send({ error })
   }
 })
 
@@ -53,7 +53,6 @@ server.post('/users/signup', async (req, res) => {
     const user = await UsersModel.executeFirst('getById', {
       id: response.insertId
     })
-
     res.send({ token: UsersModel.token(user) })
   } catch (error) {
     return res.status(422).send({ error })
@@ -104,7 +103,6 @@ server.put('/users/forgot', async (req, res) => {
  */
 server.put('/users/reset', async (req, res) => {
   try {
-    console.log('@@@reset@', req.body)
     const user = await UsersModel.executeFirst('getByIdAndResetPassword', { id: req.body.id, reset: req.body.reset })
     // If something weird happens, abort.
     if (!user.id) throw { errno: 2000, code: 'ERROR_USER_NOT_FOUND' } // eslint-disable-line

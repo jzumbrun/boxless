@@ -2,10 +2,15 @@ const config = {}
 
 /** DEFAULTS **/
 config.defaults = {
+  env: process.env.NODE_ENV,
   base: process.cwd(),
   port: 8081,
   db: {
-    name: 'development'
+    connectionLimit: 50,
+    user: 'boxless',
+    password: '#!boxless321321',
+    database: 'boxless',
+    dateStrings: true
   },
   mailProvider: {
     smtp: {
@@ -35,7 +40,9 @@ config.development = {}
 /** TESTING **/
 config.testing = {
   db: {
-    name: 'test'
+    host: 'db',
+    database: 'test',
+    dateStrings: true
   },
   mailProvider: {
     smtp: null
@@ -43,21 +50,12 @@ config.testing = {
 }
 
 /** STAGING **/
-config.staging = {
-  db: {
-    name: 'staging'
-  }
-}
+config.staging = {}
 
 /** PRODUCTION **/
-config.production = {
-  db: {
-    name: 'production'
-  }
-}
+config.production = {}
 
 /* !!! DONT CHANGE THIS LINE !!! */
 module.exports = new function () {
-  process.env.NODE_ENV = config.defaults.env = process.env.NODE_ENV || require('./.env')
-  return require('lodash').merge(config.defaults, config[config.defaults.env])
+  return require('lodash').merge(config.defaults, config[process.env.NODE_ENV])
 }()

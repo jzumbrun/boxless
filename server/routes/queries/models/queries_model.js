@@ -1,4 +1,4 @@
-const Model = require('@app/lib/model')
+const Model = require('../../../lib/model')
 
 class QueriesModel extends Model {}
 

@@ -5,10 +5,10 @@ const express = require('express')
 const parser = require('body-parser')
 const compression = require('compression')
 const jwt = require('express-jwt')
-const config = require('@app/config')
-const server = require('@app/lib/server')
-const controllers = require('@app/lib/controllers')
-const layouts = require('@app/lib/layouts')
+const config = require('./config')
+const server = require('./lib/server')
+const controllers = require('./lib/controllers')
+const layouts = require('./lib/layouts')
 
 /**
  *  Define the server

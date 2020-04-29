@@ -3,13 +3,15 @@ const _ = require('lodash')
 const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
 
-const config = require('@app/config')
-const Model = require('@app/lib/model')
-const definitions = require('@app/routes/users/models/defined_queries.json5')
+const config = require('../../../config')
+const Model = require('../../../lib/model')
+const definitions = require('./defined_queries.json5')
 const supersequel = require('@elseblock/supersequel')({
   helpers: [{ functions: _, prefix: '_' }],
   definitions: definitions,
-  query: query => module.exports.query(query)
+  query: query => {
+    return module.exports.query(query)
+  }
 })
 
 class UsersModel extends Model {
@@ -25,7 +27,10 @@ class UsersModel extends Model {
     })
 
     if (results.queries[0].error) {
-      throw results.queries[0].error.details[0]
+      if (results.queries[0].error.details) {
+        throw results.queries[0].error.details[0]
+      }
+      throw results.queries[0].error
     }
     if (first) return results.queries[0].results[0] || {}
     else return results.queries[0].results
@@ -55,7 +60,7 @@ class UsersModel extends Model {
   async getByEmailAndPassword (email, password) {
     const user = await this.executeFirst('getByEmail', { email })
     const matches = this.passwordMatches(password, user)
-    if (!user || !matches) throw Error('ERROR_USER_NOT_FOUND')
+    if (!user || !matches) throw { errno: 2000, code: 'ERROR_USER_NOT_FOUND' } // eslint-disable-line
     return user
   }
 
@@ -73,7 +78,7 @@ class UsersModel extends Model {
         email,
         password: hash.password,
         salt: hash.salt,
-        access: ['user']
+        access: JSON.stringify(['user'])
       }
     })
   }

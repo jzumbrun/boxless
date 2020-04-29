@@ -5,7 +5,7 @@
   },
   {
     "name": "users.create",
-    "statement": "CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL UNIQUE, password TEXT NOT NULL, salt TEXT NOT NULL, access TEXT NOT NULL, reset TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP)"
+    "statement": "CREATE TABLE users (id int(11) unsigned NOT NULL AUTO_INCREMENT, name varchar(200) DEFAULT NULL, email varchar(200) NOT NULL DEFAULT '', password char(128) DEFAULT NULL, salt char(32) DEFAULT NULL, access text DEFAULT NULL, reset char(32) DEFAULT NULL, created_at datetime DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8"
   },
   {
     "name": "users.insert",

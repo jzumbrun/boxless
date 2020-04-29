@@ -7,6 +7,23 @@ services:
     command: tail -f /dev/null
     volumes:
       - .:/var/www/app
+    depends_on:
+      - db
     ports:
       - "8081:8081"
-      - "9229:9229"
+      - "5858:5858"
+    links:
+      - db
+  db:
+    container_name: mysql
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: b33pb00p
+      MYSQL_DATABASE: boxless
+      MYSQL_USER: boxless
+      MYSQL_PASSWORD: "#!boxless321321"
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "3306:3306"
