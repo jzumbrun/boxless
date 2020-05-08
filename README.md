@@ -2,10 +2,10 @@
 
 ![boxless](https://github.com/jzumbrun/boxless-app/blob/master/public/assets/images/logo.png?sanitize=1)
 
-boxless is a logic-less SQL paralell request api, using plain SQL statements built by handlebar templates, validated by json schema.
-boxless's goal is to simplify Single Page Application server data retrieval and storage.
+Boxless is a logic-less SQL paralell request api, using plain SQL statements built by handlebar templates, validated by json schema.
+Boxless's goal is to simplify Single Page Application server data retrieval and storage.
 
-boxless, inspired by GraphQL, can wrap up multiple resource requests and mutations into one api call. Thus reducing
+Boxless, inspired by GraphQL, can wrap up multiple resource requests and mutations into one api call. Thus reducing
 the chattiness of SPAs. Similart to GraphQL, all requests are POSTS regardless of the query actions.
 
 #### Examples
@@ -44,7 +44,7 @@ Name: Name should reflect the resource and action. This is only a convention. Bu
 statement: The statement is a simple SQL statement managed by handlebars. Handlebars will take care of sql injections.
     We have take the liberty to add all lodash functions to handlebars for convenience. That are defined as `_trim`, etc.
     Each property from the client request will be available to use in the query statement as well as a user object
-    that is provided by boxless via a signin gateway and JWT tokens.
+    that is provided by Boxless via a signin gateway and JWT tokens.
     All successfull query responses within a client request will be available to subseqent queries in the $history object.
     An id is required on the query request inorder to access it in the $history object. Also the sync must be set to true, in
     order to ensure the previous query is run in proper order.
@@ -115,7 +115,7 @@ need of creating access layers, controllers, and database models. But still have
 
 ## What about data aggregation and complex relationships?
 More and more logic is being added to the client side of SPAs, leaving the developer to essentially maintain two applications, the client and server sides.
-Simplifying the server logic helps alleviate the strain. Many SPAs are now requesting simpler data from the server and managing the aggregations and complex relationships on the client side. boxless is here to support that.
+Simplifying the server logic helps alleviate the strain. Many SPAs are now requesting simpler data from the server and managing the aggregations and complex relationships on the client side. Boxless is here to support that.
 
 ## Intallation
 make start
