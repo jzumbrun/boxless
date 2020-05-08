@@ -38,7 +38,7 @@ sync: Sync will force an async/await on the query. All synced queries will load 
 ```
 
 ## Server defined queries
-Each query is given a name, an SQL statement, an access list, and an inbound schema.
+Each query is given a name, an SQL statement, an access list, inbound and outbout schemas.
 
 Name: Name should reflect the resource and action. This is only a convention. But it must be unique.
 statement: The statement is a simple SQL statement managed by handlebars. Handlebars will take care of sql injections.
