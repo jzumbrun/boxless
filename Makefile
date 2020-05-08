@@ -106,7 +106,7 @@ code/lint:
 	@${DOCKERCOMMANDAPP} "standard --fix"
 
 test/all:
-	# @echo 'Restarting express server in testing env...'
+	@echo 'Restarting express server in testing env...'
 	@${DOCKERCOMMANDAPP} "NODE_ENV=testing pm2 start dev.json"
 	-@${DOCKERCOMMANDAPP} "NODE_ENV=testing mocha ./server/routes/**/*.test.js --exit --config ./server/lib/test/config.js"
 	@echo 'Restarting express server in development env...'

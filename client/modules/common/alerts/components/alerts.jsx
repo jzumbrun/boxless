@@ -1,5 +1,4 @@
 import React from 'react'
-import _ from 'underscore'
 import AlertStore from '../stores/alert_store.js'
 
 class Alerts extends React.Component {

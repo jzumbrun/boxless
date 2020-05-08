@@ -13,7 +13,8 @@ server.put('/users/session', async (req, res) => {
     if (!user.id) throw { errno: 2000, code: 'ERROR_USER_NOT_FOUND' } // eslint-disable-line
 
     const updateUser = { id: user.id }
-    if (req.body.name) updateUser.name = req.body.name
+    if (req.body.firstName) updateUser.firstName = req.body.firstName
+    if (req.body.lastName) updateUser.lastName = req.body.lastName
     if (req.body.email) updateUser.email = req.body.email
     if (req.body.password) updateUser.password = req.body.password
 
@@ -46,7 +47,8 @@ server.put('/users/signin', async (req, res) => {
 server.post('/users/signup', async (req, res) => {
   try {
     const response = await UsersModel.insert(
-      req.body.name,
+      req.body.firstName,
+      req.body.lastName,
       req.body.email,
       req.body.password
     )
@@ -81,7 +83,8 @@ server.put('/users/forgot', async (req, res) => {
         subject: 'Bastion Base Password Reset',
         to: user.email,
         data: {
-          name: user.name,
+          firstName: user.firstName,
+          lastName: user.lastName,
           url:
             'http://' +
             req.headers.host +

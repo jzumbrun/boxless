@@ -61,7 +61,7 @@
   },
   {
     "name": "update",
-    "statement": "UPDATE users SET {{resource}} WHERE id={{resource.id}}",
+    "statement": "UPDATE users SET {{_snakeCase resource}} WHERE id={{resource.id}}",
     "access": ["system"],
     "inboundSchema": {
       "type": "object",
@@ -70,7 +70,8 @@
         "resource": {
           "type": "object",
           "properties": {
-            name: { "type": "string" },
+            firstName: { "type": "string" },
+            lastName: { "type": "string" },
             email: { "type": "string" },
             password: { "type": "string" },
             salt: { "type": "string" },
@@ -85,7 +86,7 @@
   },
   {
     "name": "insert",
-    "statement": "INSERT INTO users (name, email, password, salt, access) VALUES({{resource.name}}, {{resource.email}}, {{resource.password}}, {{resource.salt}}, {{resource.access}})",
+    "statement": "INSERT INTO users (first_name, last_name, email, password, salt, access) VALUES({{resource.firstName}}, {{resource.lastName}}, {{resource.email}}, {{resource.password}}, {{resource.salt}}, {{resource.access}})",
     "access": ["system"],
     "inboundSchema": {
       "type": "object",
@@ -93,14 +94,15 @@
         "resource": {
           "type": "object",
           "properties": {
-            name: { "type": "string" },
+            firstName: { "type": "string" },
+            lastName: { "type": "string" },
             email: { "type": "string" },
             password: { "type": "string" },
             salt: { "type": "string" },
             access: { "type": "string" }
           },
           "additionalProperties": false,
-          "required": ["name", "email", "password", "salt", "access"]
+          "required": ["firstName", "lastName", "email", "password", "salt", "access"]
         }
       },
       "additionalProperties": false,

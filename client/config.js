@@ -18,14 +18,14 @@ class Config {
      * Is Local
      */
   isLocal () {
-    return this.env == 'local'
+    return this.env === 'local'
   }
 
   /**
      * Is Production
      */
   isProduction () {
-    return this.env == 'production'
+    return this.env === 'production'
   }
 
   /**
@@ -35,7 +35,7 @@ class Config {
     if (env) {
       this.env = env
       return
-        }
+    }
     // Local ends with a .dev
     if (window.location.hostname.match(/.*\.dev$/)) {
       this.env = 'local'

@@ -23,7 +23,8 @@
   },
   "standard": {
     "env": [
-      "mocha"
+      "mocha",
+      "browser"
     ]
   }
 }

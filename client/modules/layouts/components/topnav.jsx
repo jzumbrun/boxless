@@ -47,31 +47,31 @@ class TopNav extends React.Component {
             </a>
           </div>
           {!this.state.current._id &&
-                      <div className='container'>
-                          <ul className='nav navbar-nav'>
-                            <li>
-                              <button className='btn btn-default' onClick={() => _.route('users/signin')}>Sign In</button>
-                              <button className='btn btn-primary margin-left-sm' onClick={() => _.route('users/signup')}>Sign Up</button>
-                            </li>
-                          </ul>
-                        </div>}
+            <div className='container'>
+              <ul className='nav navbar-nav'>
+                <li>
+                  <button className='btn btn-default' onClick={() => _.route('users/signin')}>Sign In</button>
+                  <button className='btn btn-primary margin-left-sm' onClick={() => _.route('users/signup')}>Sign Up</button>
+                </li>
+              </ul>
+            </div>}
           {this.state.current._id &&
-                      <div className='container'>
-                          <ul className='nav navbar-nav main-menu'>
-                            <li>
-                              <Dropdown
-                                trigger={{ label: this.state.current.first_name }}
-                                links={[
-                                  { label: 'Home', to: '/home/index' },
-                                  { label: 'Account', to: '/users/account' },
-                                  { divider: true },
-                                  { label: 'Sign Out', handleClick: this.handleSignOut.bind(this) }
-                                ]}
-                                caret
-                              />
-                            </li>
-                          </ul>
-                        </div>}
+            <div className='container'>
+              <ul className='nav navbar-nav main-menu'>
+                <li>
+                  <Dropdown
+                    trigger={{ label: this.state.current.firstName }}
+                    links={[
+                      { label: 'Home', to: '/home/index' },
+                      { label: 'Account', to: '/users/account' },
+                      { divider: true },
+                      { label: 'Sign Out', handleClick: this.handleSignOut.bind(this) }
+                    ]}
+                    caret
+                  />
+                </li>
+              </ul>
+            </div>}
         </div>
       </nav>
     )

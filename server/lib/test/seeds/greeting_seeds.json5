@@ -13,10 +13,10 @@
   },
   {
     "name": "users.create",
-    "statement": "CREATE TABLE users (id int(11) unsigned NOT NULL AUTO_INCREMENT, name varchar(200) DEFAULT NULL, email varchar(200) NOT NULL DEFAULT '', password char(128) DEFAULT NULL, salt char(32) DEFAULT NULL, access text DEFAULT NULL, reset char(32) DEFAULT NULL, created_at datetime DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8"
+    "statement": "CREATE TABLE users (id int(11) unsigned NOT NULL AUTO_INCREMENT, first_name varchar(200) DEFAULT NULL, last_name varchar(200) DEFAULT NULL, email varchar(200) NOT NULL DEFAULT '', password char(128) DEFAULT NULL, salt char(32) DEFAULT NULL, access text DEFAULT NULL, reset char(32) DEFAULT NULL, created_at datetime DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8"
   },
   {
     "name": "users.insert",
-    "statement": "INSERT INTO users (id, name, email, password, salt, access, created_at) VALUES(1,'Master Dude','master@dude.com','a6fe531c8d8a56f3e540f0c60349ae105f000551b68b29cb239a1525fbafc31c44d31d62f7b881ea0e1a1dc1bbfa9a2fe2ab0ee1886dee645a7b532b97e5a41c','7bfcdd159a854f5925c9365fa28607f8','[\"user\"]','2019-12-14 03:44:21')"
+    "statement": "INSERT INTO users (id, first_name, last_name, email, password, salt, access, created_at) VALUES(1,'Master', 'Dude','master@dude.com','a6fe531c8d8a56f3e540f0c60349ae105f000551b68b29cb239a1525fbafc31c44d31d62f7b881ea0e1a1dc1bbfa9a2fe2ab0ee1886dee645a7b532b97e5a41c','7bfcdd159a854f5925c9365fa28607f8','[\"user\"]','2019-12-14 03:44:21')"
   }
 ]

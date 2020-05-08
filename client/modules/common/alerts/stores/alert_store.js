@@ -35,8 +35,8 @@ class AlertStore extends Store {
       alert.type = alert.type || 'info'
 
       // Check for duplicates unless duplicates are allowed
-      _.each(this.alerts, (this_alert) => {
-        if (!alert.duplicates && this_alert.message == alert.message) {
+      _.each(this.alerts, (thisAlert) => {
+        if (!alert.duplicates && thisAlert.message === alert.message) {
           this.delete(alert.message)
         }
       })
@@ -58,9 +58,9 @@ class AlertStore extends Store {
     }
 
     if (_.isString(message)) {
-      this.alerts = this.alerts.filter((a) => { return a.message != message })
+      this.alerts = this.alerts.filter((a) => { return a.message !== message })
     } else if (_.isObject(message) && message.tag) {
-      this.alerts = this.alerts.filter((a) => { return a.tag != message.tag })
+      this.alerts = this.alerts.filter((a) => { return a.tag !== message.tag })
     }
     this.emit('delete.success', this.alerts)
   }
@@ -74,7 +74,7 @@ class AlertStore extends Store {
       // Do not delete alerts without a timeout. On hash change will set no timeouts
       if (alert.cleared || !alert.timeout) {
         return
-            }
+      }
 
       // Mark the alert as cleared so it wont get sent to clear again
       alert.cleared = true

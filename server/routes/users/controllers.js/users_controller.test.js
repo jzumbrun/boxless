@@ -44,7 +44,8 @@ describe('Users', () => {
     it('signup new user', done => {
       axios
         .post(util.buildUrl('users/signup'), {
-          name: 'Double Dude',
+          firstName: 'Double',
+          lastName: 'Dude',
           email: 'dude@dude.com',
           password: 'password321'
         })
@@ -80,7 +81,8 @@ describe('Users', () => {
     it('update session user', done => {
       axios
         .put(util.buildUrl('users/session'), {
-          name: 'Triple Dude',
+          firstName: 'Triple',
+          lastName: 'Dude',
           email: 'triple@dude.com',
           password: 'password123321'
         })
@@ -91,7 +93,8 @@ describe('Users', () => {
           const user = getUserFromToken(response.data.token)
           expect(user).toEqual({
             id: 2,
-            name: 'Triple Dude',
+            firstName: 'Triple',
+            lastName: 'Dude',
             email: 'triple@dude.com',
             access: ['user'],
             exp: user.exp,
@@ -110,7 +113,8 @@ describe('Users', () => {
     it('update session user name', done => {
       axios
         .put(util.buildUrl('users/session'), {
-          name: 'Triple Triple TripleDude'
+          firstName: 'Triple Triple',
+          lastName: 'TripleDude'
         })
         .then(response => {
           expect(response.status).toEqual(200)
@@ -119,7 +123,8 @@ describe('Users', () => {
           const user = getUserFromToken(response.data.token)
           expect(user).toEqual({
             id: 2,
-            name: 'Triple Triple TripleDude',
+            firstName: 'Triple Triple',
+            lastName: 'TripleDude',
             email: 'triple@dude.com',
             access: ['user'],
             exp: user.exp,
@@ -248,7 +253,8 @@ describe('Users', () => {
           const user = getUserFromToken(response.data.token)
           expect(user).toEqual({
             id: 2,
-            name: 'Triple Triple TripleDude',
+            firstName: 'Triple Triple',
+            lastName: 'TripleDude',
             email: 'triple@dude.com',
             access: ['user'],
             exp: user.exp,

@@ -7,7 +7,12 @@ const config = require('../../../config')
 const Model = require('../../../lib/model')
 const definitions = require('./defined_queries.json5')
 const supersequel = require('@elseblock/supersequel')({
-  helpers: [{ functions: _, prefix: '_' }],
+  helpers: [{ functions: _, prefix: '_' },
+    { functions: {
+      cc: function(a, b){
+        console.log( '@@CC@@',a, b )
+      }
+    }],
   definitions: definitions,
   query: query => {
     return module.exports.query(query)
@@ -68,13 +73,14 @@ class UsersModel extends Model {
    * Insert User
    * @return promise
    */
-  async insert (name, email, password) {
+  async insert (firstName, lastName, email, password) {
     const exists = await this.executeFirst('getByEmail', { email })
     if (exists.id) throw { errno: 2001, code: 'ERROR_EMAIL_EXISTS' } // eslint-disable-line
     const hash = this.hashPassword(password)
     return this.execute('insert', {
       resource: {
-        name,
+        firstName,
+        lastName,
         email,
         password: hash.password,
         salt: hash.salt,
@@ -132,7 +138,8 @@ class UsersModel extends Model {
     return jwt.sign(
       {
         id: user.id,
-        name: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         access: JSON.parse(user.access)
       },
