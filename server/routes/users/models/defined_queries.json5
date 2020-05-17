@@ -1,14 +1,18 @@
 [
   {
     "name": "getById",
-    "statement": "SELECT {{: select}} from users WHERE id={{id}}",
+    "statement": "SELECT {{:o select}} from users WHERE id={{id}}",
     "access": ["system"],
+    "alias": {
+      "firstName": "first_name",
+      "lastName": "last_name"
+    },
     "inboundSchema": {
       "type": "object",
       "properties": {
         "select": {
           "type": "array",
-          "default": ['*']
+          "default": ["id", "firstName", "lastName", "email", "password", "salt", "access", "reset"]
         },
         "id": {
           "type": "number"
@@ -20,14 +24,18 @@
   },
   {
     "name": "getByIdAndResetPassword",
-    "statement": "SELECT {{: select}} from users WHERE id={{id}} AND reset={{reset}}",
+    "statement": "SELECT {{:o select}} from users WHERE id={{id}} AND reset={{reset}}",
     "access": ["system"],
+    "alias": {
+      "firstName": "first_name",
+      "lastName": "last_name"
+    },
     "inboundSchema": {
       "type": "object",
       "properties": {
         "select": {
           "type": "array",
-          "default": ['*']
+          "default": ["id", "firstName", "lastName", "email", "password", "salt", "access", "reset"]
         },
         "reset": {
           "type": "string"
@@ -42,14 +50,18 @@
   },
   {
     "name": "getByEmail",
-    "statement": "SELECT {{: select}} from users WHERE email={{email}}",
+    "statement": "SELECT {{:o select}} from users WHERE email={{email}}",
     "access": ["system"],
+    "alias": {
+      "firstName": "first_name",
+      "lastName": "last_name"
+    },
     "inboundSchema": {
       "type": "object",
       "properties": {
         "select": {
           "type": "array",
-          "default": ["*"]
+          "default": ["id", "firstName", "lastName", "email", "password", "salt", "access", "reset"]
         },
         "email": {
           "type": "string"
@@ -61,8 +73,12 @@
   },
   {
     "name": "update",
-    "statement": "UPDATE users SET {{_snakeCase resource}} WHERE id={{resource.id}}",
+    "statement": "UPDATE users SET {{:i resource}} WHERE id={{resource.id}}",
     "access": ["system"],
+    "alias": {
+      "firstName": "first_name",
+      "lastName": "last_name"
+    },
     "inboundSchema": {
       "type": "object",
       "properties": {
@@ -86,8 +102,12 @@
   },
   {
     "name": "insert",
-    "statement": "INSERT INTO users (first_name, last_name, email, password, salt, access) VALUES({{resource.firstName}}, {{resource.lastName}}, {{resource.email}}, {{resource.password}}, {{resource.salt}}, {{resource.access}})",
+    "statement": "INSERT INTO users ({{:i $this.inboundSchema.properties.resource.required }}) VALUES({{resource.firstName}}, {{resource.lastName}}, {{resource.email}}, {{resource.password}}, {{resource.salt}}, {{resource.access}})",
     "access": ["system"],
+    "alias": {
+      "firstName": "first_name",
+      "lastName": "last_name"
+    },
     "inboundSchema": {
       "type": "object",
       "properties": {

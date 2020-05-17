@@ -17,7 +17,7 @@
     {
         "name": "greetings.select.byDescription",
         "statement": "\
-            SELECT {{: select}} \
+            SELECT {{:o select}} \
             FROM greetings \
             WHERE user_id={{$user.id}} \
             AND description={{_trim description}} \
@@ -58,7 +58,7 @@
     },
     {
         "name": "greetings.select",
-        "statement": "SELECT {{: select}} FROM greetings WHERE user_id={{$user.id}} LIMIT {{limit}}",
+        "statement": "SELECT {{:o select}} FROM greetings WHERE user_id={{$user.id}} LIMIT {{limit}}",
         "access": ["user"],
         "inboundSchema": {
             "type": "object",
@@ -115,7 +115,7 @@
     },
     {
         "name": "users.current",
-        "statement": "SELECT {{: select}} FROM users WHERE id={{$user.id}} LIMIT 1",
+        "statement": "SELECT {{:o select}} FROM users WHERE id={{$user.id}} LIMIT 1",
         "access": ["user"],
         "inboundSchema": {
             "type": "object",

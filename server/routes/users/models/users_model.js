@@ -7,12 +7,7 @@ const config = require('../../../config')
 const Model = require('../../../lib/model')
 const definitions = require('./defined_queries.json5')
 const supersequel = require('@elseblock/supersequel')({
-  helpers: [{ functions: _, prefix: '_' },
-    { functions: {
-      cc: function(a, b){
-        console.log( '@@CC@@',a, b )
-      }
-    }],
+  helpers: [{ functions: _, prefix: '_' }],
   definitions: definitions,
   query: query => {
     return module.exports.query(query)

@@ -1,4 +1,6 @@
-FROM node:12.13.1-buster
+FROM node:12.16.1-alpine
+RUN apk add bash;
+
 WORKDIR /var/www/app/server
 
 COPY package*.json ./
