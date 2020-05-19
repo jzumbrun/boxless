@@ -1,7 +1,7 @@
 [
   {
     "name": "getById",
-    "statement": "SELECT {{:o select}} from users WHERE id={{id}}",
+    "statement": "SELECT {{:as select}} from users WHERE id={{id}}",
     "access": ["system"],
     "alias": {
       "firstName": "first_name",
@@ -24,7 +24,7 @@
   },
   {
     "name": "getByIdAndResetPassword",
-    "statement": "SELECT {{:o select}} from users WHERE id={{id}} AND reset={{reset}}",
+    "statement": "SELECT {{:as select}} from users WHERE id={{id}} AND reset={{reset}}",
     "access": ["system"],
     "alias": {
       "firstName": "first_name",
@@ -50,7 +50,7 @@
   },
   {
     "name": "getByEmail",
-    "statement": "SELECT {{:o select}} from users WHERE email={{email}}",
+    "statement": "SELECT {{:as select}} from users WHERE email={{email}}",
     "access": ["system"],
     "alias": {
       "firstName": "first_name",
@@ -73,7 +73,7 @@
   },
   {
     "name": "update",
-    "statement": "UPDATE users SET {{:i resource}} WHERE id={{resource.id}}",
+    "statement": "UPDATE users SET {{:id resource}} WHERE id={{resource.id}}",
     "access": ["system"],
     "alias": {
       "firstName": "first_name",
@@ -102,7 +102,7 @@
   },
   {
     "name": "insert",
-    "statement": "INSERT INTO users ({{:i $this.inboundSchema.properties.resource.required }}) VALUES({{resource.firstName}}, {{resource.lastName}}, {{resource.email}}, {{resource.password}}, {{resource.salt}}, {{resource.access}})",
+    "statement": "INSERT INTO users ({{:id $definition.inboundSchema.properties.resource.required }}) VALUES({{resource.firstName}}, {{resource.lastName}}, {{resource.email}}, {{resource.password}}, {{resource.salt}}, {{resource.access}})",
     "access": ["system"],
     "alias": {
       "firstName": "first_name",

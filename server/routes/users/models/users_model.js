@@ -7,7 +7,7 @@ const config = require('../../../config')
 const Model = require('../../../lib/model')
 const definitions = require('./defined_queries.json5')
 const supersequel = require('@elseblock/supersequel')({
-  helpers: [{ functions: _, prefix: '_' }],
+  helpers: [{ functions: _, prefix: '_', context: false }],
   definitions: definitions,
   query: query => {
     return module.exports.query(query)

@@ -12,7 +12,8 @@
     "url": ""
   },
   "dependencies": {
-    "@elseblock/supersequel": "^0.2.6",
+    "@elseblock/supersequel": "^0.2.7",
+    "axios": "0.19.0",
     "body-parser": "1.19.0",
     "compression": "1.7.4",
     "express": "4.17.1",
@@ -26,7 +27,6 @@
     "nodemailer": "6.4.2"
   },
   "devDependencies": {
-    "axios": "0.19.0",
     "eslint": "3.12.2",
     "expect": "24.9.0",
     "mocha": "6.2.0"
