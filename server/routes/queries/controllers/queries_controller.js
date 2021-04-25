@@ -7,7 +7,8 @@ const supersequel = require('@elseblock/supersequel')({
   helpers: [{ functions: _, prefix: '_', context: false }],
   definitions: definitions,
   query: query => QueriesModel.query(query),
-  release: () => QueriesModel.release()
+  release: () => QueriesModel.release(),
+  debug: true
 })
 
 /**

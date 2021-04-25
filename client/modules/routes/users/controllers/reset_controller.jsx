@@ -1,7 +1,7 @@
 import React from 'react'
 import { Component } from 'supercapacitor'
-import UserStore from 'modules/routes/users/stores/user_store'
-import FormLib from 'modules/lib/form'
+import UserStore from '../stores/user_store'
+import FormLib from '../../../lib/form'
 
 class Reset extends Component {
   constructor (props) {
@@ -36,7 +36,7 @@ class Reset extends Component {
             <div className='panel-body'>
               <div className='form-group'>
                 <label htmlFor='password'>New Password</label>
-                <input type='password' className='form-control' onChange={FormLib.handleChange.bind(this, 'password')} />
+                <input type='password' className='form-control' onChange={FormLib.handleChange(this, 'password')} />
               </div>
 
               <button onClick={this.handleSubmit.bind(this)} className='btn btn-primary'>GO</button>

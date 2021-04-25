@@ -6,6 +6,7 @@ config.defaults = {
   base: process.cwd(),
   port: 8081,
   db: {
+    host: 'db',
     connectionLimit: 50,
     user: 'boxless',
     password: '#!boxless321321',

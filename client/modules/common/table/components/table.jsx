@@ -1,10 +1,10 @@
 import React from 'react'
 import { Component } from 'supercapacitor'
 import _ from 'underscore'
-import TableStore from 'modules/common/table/stores/table_store'
-import TablePagination from 'modules/common/table/components/table_pagination.jsx'
-import TableLimit from 'modules/common/table/components/table_limit.jsx'
-import TableSearch from 'modules/common/table/components/table_search.jsx'
+import TableStore from '../../common/table/stores/table_store'
+import TablePagination from '../../common/table/components/table_pagination.jsx'
+import TableLimit from '../../common/table/components/table_limit.jsx'
+import TableSearch from '../../common/table/components/table_search.jsx'
 
 class Table extends Component {
   constructor (props) {

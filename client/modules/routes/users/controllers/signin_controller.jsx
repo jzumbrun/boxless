@@ -1,9 +1,9 @@
 import React from 'react'
 import _ from 'underscore'
 import { Component } from 'supercapacitor'
-import Loading from 'modules/layouts/components/loading.jsx'
-import UserStore from 'modules/routes/users/stores/user_store'
-import FormLib from 'modules/lib/form'
+import Loading from '../../../layouts/components/loading.jsx'
+import UserStore from '../stores/user_store'
+import FormLib from '../../../lib/form'
 
 class SignIn extends Component {
   constructor (props) {
@@ -17,7 +17,7 @@ class SignIn extends Component {
     }
 
     // Force signed in user to contests list
-    if (UserStore.current._id) {
+    if (UserStore.current.id) {
       _.route('home/index')
     }
   }
@@ -46,11 +46,11 @@ class SignIn extends Component {
             <div className='panel-body'>
               <div className='form-group'>
                 <label htmlFor='email'>Email Address</label>
-                <input type='text' className='form-control' onBlur={FormLib.handleChange.bind(this, 'email')} onChange={FormLib.handleChange.bind(this, 'email')} />
+                <input type='text' className='form-control' onBlur={FormLib.handleChange(this, 'email')} onChange={FormLib.handleChange(this, 'email')} />
               </div>
               <div className='form-group'>
                 <label htmlFor='password'>Password</label>
-                <input type='password' className='form-control' onBlur={FormLib.handleChange.bind(this, 'password')} onChange={FormLib.handleChange.bind(this, 'password')} />
+                <input type='password' className='form-control' onBlur={FormLib.handleChange(this, 'password')} onChange={FormLib.handleChange(this, 'password')} />
               </div>
 
               <button onClick={this.handleSubmit.bind(this)} className='btn btn-primary'>Sign In</button> <a className='margin-left-sm' href='/#/users/forgot'> Forgot Password?</a>

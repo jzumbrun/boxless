@@ -15,16 +15,5 @@
     "rest"
   ],
   "author": "Jon Zumbrun",
-  "license": "MIT",
-  "dependencies": {},
-  "peerDependencies": {},
-  "devDependencies": {
-    "standard": "*"
-  },
-  "standard": {
-    "env": [
-      "mocha",
-      "browser"
-    ]
-  }
+  "license": "MIT"
 }

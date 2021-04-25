@@ -7,7 +7,7 @@
     "type": "git",
     "url": ""
   },
-  "author": "Superconainer",
+  "author": "Supercontainer",
   "license": "MIT",
   "bugs": {},
   "homepage": "",
@@ -21,11 +21,20 @@
     "underscore": "1.8.3"
   },
   "devDependencies": {
+    "@types/react": "^17.0.3",
+    "@types/underscore": "^1.11.1",
     "react-test-renderer": "15.4.2",
     "source-map-loader": "^0.2.4",
+    "standard": "*",
     "ts-loader": "^6.2.2",
     "typescript": "^3.8.3",
     "webpack": "^4.39.3",
     "webpack-cli": "3.1.0"
+  },
+  "standard": {
+    "env": [
+      "mocha",
+      "browser"
+    ]
   }
 }

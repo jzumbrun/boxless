@@ -1,4 +1,23 @@
 [
+        {
+        "name": "me.select",
+        "statement": "Select {{:as select}} FROM users WHERE id={{$user.id}} LIMIT 1",
+        "alias": {
+            "firstName": "first_name",
+            "lastName": "last_name"
+        },
+        "access": ["user"],
+        "inboundSchema": {
+            "type": "object",
+            "properties": {
+                "select": {
+                    "type": "array",
+                    "default": ["*"]
+                }
+            },
+            "additionalProperties": false,
+        }
+    },
     {
         "name": "greetings.delete",
         "statement": "DELETE FROM greetings WHERE id={{id}} AND user_id={{$user.id}}",

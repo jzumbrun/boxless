@@ -9,4 +9,4 @@ export default {
   reset_password_wrong: 'Reset password token is invalid. Please start password reset proccess over.',
   contact_message_sent: 'Message sent. You will hear from us shortly.',
   all_fields_required: 'All fields are required.'
-}
+} as Record<string, string>

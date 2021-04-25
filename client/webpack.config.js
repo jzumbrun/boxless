@@ -1,8 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
 
-console.log(path.resolve(__dirname, 'node_modules/supercapacitor'))
-
 module.exports = {
   mode: 'development',
   entry: {
@@ -15,7 +13,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
-    modules: [path.resolve('./'), 'node_modules']
+    modules: ['node_modules']
   },
   plugins: [
     new webpack.DllReferencePlugin({

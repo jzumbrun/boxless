@@ -1,12 +1,14 @@
 {
     "compilerOptions": {
+      "esModuleInterop": true, 
+      "moduleResolution": "node",
       "outDir": "../public/assets/build/js",
       "rootDir": ".",
       "allowJs": true,
       "sourceMap": true,
       "noImplicitAny": true,
       "module": "es6",
-      "target": "es6",
+      "target": "es2015",
       "jsx": "react"
     }
 }

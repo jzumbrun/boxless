@@ -1,15 +1,14 @@
 import React from 'react'
 import { Component } from 'supercapacitor'
-import UserStore from 'modules/routes/users/stores/user_store'
-import HomeStore from 'modules/routes/home/stores/home_store'
+import UserStore from '../../users/stores/user_store'
+import HomeStore from '../../home/stores/home_store'
 
 class Index extends Component {
   constructor (props) {
     super(props)
     UserStore.is('user', true)
-    this.state = {}
 
-    this.connect(HomeStore, 'getMe.success')
+    this.connect(HomeStore, 'getMe.success', this.onGetMeSuccess.bind(this))
   }
 
   componentDidMount () {
@@ -18,15 +17,17 @@ class Index extends Component {
   }
 
   onGetMeSuccess (data) {
+    debugger
     this.setState(data)
   }
 
   render () {
     var homeState = HomeStore.getState()
+    console.log(homeState)
     return (
       <div className='container'>
         <div className='page-header'>
-          <h1>Welcome Home {homeState.firstName}</h1>
+          <h1>Welcome Home {homeState.me?.firstName}</h1>
         </div>
       </div>
     )

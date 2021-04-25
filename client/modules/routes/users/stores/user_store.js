@@ -33,11 +33,11 @@ class UserStore extends Store {
   /**
    * Is
    */
-  is (role, redirect) {
-    role = role || 'user'
-    if (!this.current.roles || (_.isArray(this.current.roles) && this.current.roles.indexOf(role) === -1)) {
+  is (access, redirect) {
+    access = access || 'user'
+    if (!this.current.access || (_.isArray(this.current.access) && this.current.access.indexOf(access) === -1)) {
       if (redirect) {
-        window.location = '#/users/signin'
+        this.signOut()
       }
       return false
     }

@@ -1,7 +1,22 @@
 import { Store } from 'supercapacitor'
 import _ from 'underscore'
 
+export interface IAlert {
+  type: string
+  message: IMessage
+  duplicates?: boolean
+  timeout?: number
+  tag?: string
+  cleared?: boolean,
+  title?: string
+}
+
+export interface IMessage {
+  tag?: string
+}
+
 class AlertStore extends Store {
+  alerts: IAlert[]
   constructor () {
     super('alerts.stores.alert')
 
@@ -26,7 +41,7 @@ class AlertStore extends Store {
   /**
      * Add
      */
-  add (alerts) {
+  add (alerts: IAlert[]) {
     // Force argument to be an array
     if (!_.isArray(alerts)) {
       alerts = [alerts]
@@ -52,7 +67,7 @@ class AlertStore extends Store {
   /**
      * Delete
      */
-  delete (message) {
+  delete (message: string | IMessage) {
     if (_.isFinite(message)) {
       message = message.toString()
     }

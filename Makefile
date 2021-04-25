@@ -11,6 +11,7 @@ help:
 	@echo "stop                       Stop docker."
 	@echo ""
 	@echo "pack"
+	@echo "    pack/prod              Pack the client for production."
 	@echo "    pack/dev               Pack the client for development and watch files."
 	@echo "    pack/vendor            Pack the client vendor files."
 	@echo "    pack/stop              Stop all webpack services."
@@ -41,7 +42,7 @@ start: logs/clear
 	@echo 'Starting docker...'
 	@docker-compose up -d
 	@${DOCKERCOMMANDAPP} "cd ./server && npm ci"
-	@${DOCKERCOMMANDAPP} "pm2 start dev.json"
+	@${DOCKERCOMMANDAPP} "NODE_ENV=development pm2 start dev.json"
 	@${DOCKERCOMMANDMYSQL} "mysql -uroot -p'b33pb00p' -e 'CREATE DATABASE test;'"	
 	@${DOCKERCOMMANDMYSQL} "mysql -uroot -p'b33pb00p' -e 'GRANT ALL PRIVILEGES ON test.* TO \"boxless\"@\"%\";'"
 
@@ -64,15 +65,15 @@ logs/clear:
 
 pack/prod:
 	@echo 'Packing production...'
-	@cd ./client && webpack --env=production
+	@cd ./client && npx webpack --env=production
 
 pack/dev:
 	@echo 'Packing development and watching files...'
-	@cd ./client && webpack --env=development -w
+	@cd ./client && npx webpack --env=development -w
 
 pack/vendor:
 	@echo 'Packing vendor...'
-	@cd ./client && webpack --config webpack.dll.js --env=production
+	@cd ./client && npx webpack --config webpack.dll.js --env=production
 
 pack/stop:
 	@echo 'Stopping webpack services...'
@@ -86,7 +87,7 @@ server/logs:
 
 server/restart:
 	@echo 'Starting/Restarting express server...'
-	@${DOCKERCOMMANDAPP} "pm2 start dev.json"
+	@${DOCKERCOMMANDAPP} "NODE_ENV=development pm2 start dev.json"
 
 server/start: server/restart
 	@echo 'Dev server started. Visit localhost:8081'

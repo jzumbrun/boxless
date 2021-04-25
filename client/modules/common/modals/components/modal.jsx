@@ -1,7 +1,7 @@
 import React from 'react'
 import { Component } from 'supercapacitor'
-import AlertStore from 'modules/common/alerts/stores/alert_store'
-import ModalStore from 'modules/common/modals/stores/modal_store'
+import AlertStore from '../../common/alerts/stores/alert_store'
+import ModalStore from '../../common/modals/stores/modal_store'
 import _ from 'underscore'
 
 export default class Modal extends Component {

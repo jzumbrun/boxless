@@ -11,7 +11,8 @@ const supersequel = require('@elseblock/supersequel')({
   definitions: definitions,
   query: query => {
     return module.exports.query(query)
-  }
+  },
+  debug: true
 })
 
 class UsersModel extends Model {

@@ -1,9 +1,9 @@
 import React from 'react'
 import { Component } from 'supercapacitor'
-import UserStore from 'modules/routes/users/stores/user_store'
-import AlertStore from 'modules/common/alerts/stores/alert_store.js'
-import FormLib from 'modules/lib/form'
-import lang from 'modules/lib/lang'
+import UserStore from '../stores/user_store'
+import AlertStore from '../../../common/alerts/stores/alert_store.js'
+import FormLib from '../../../lib/form'
+import lang from '../../../lib/lang'
 
 class Forgot extends Component {
   constructor (props) {
@@ -42,7 +42,7 @@ class Forgot extends Component {
             <div className='panel-body'>
               <div className='form-group'>
                 <label htmlFor='email'>Email Address</label>
-                <input type='text' className='form-control' onChange={FormLib.handleChange.bind(this, 'email')} />
+                <input type='text' className='form-control' onChange={FormLib.handleChange(this, 'email')} />
               </div>
 
               <button onClick={this.handleSubmit.bind(this)} className='btn btn-primary'>GO</button>

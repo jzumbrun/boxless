@@ -1,7 +1,7 @@
 import React from 'react'
 import { Component } from 'supercapacitor'
-import UserStore from 'modules/routes/users/stores/user_store'
-import FormLib from 'modules/lib/form'
+import UserStore from '../stores/user_store'
+import FormLib from '../../../lib/form'
 
 class Account extends Component {
   constructor (props) {
@@ -38,11 +38,11 @@ class Account extends Component {
           <div className='row'>
             <div className='col-lg-6 margin-bottom-md'>
               <label htmlFor='firstName'>First Name</label>
-              <input type='text' value={this.state.form.firstName} className='form-control' onChange={FormLib.handleChange.bind(this, 'firstName')} />
+              <input type='text' value={this.state.form.firstName} className='form-control' onChange={FormLib.handleChange(this, 'firstName')} />
             </div>
             <div className='col-lg-6 margin-bottom-md'>
               <label htmlFor='lastName'>Last Name</label>
-              <input type='text' value={this.state.form.lastName} className='form-control' onChange={FormLib.handleChange.bind(this, 'lastName')} />
+              <input type='text' value={this.state.form.lastName} className='form-control' onChange={FormLib.handleChange(this, 'lastName')} />
             </div>
           </div>
 
@@ -51,11 +51,11 @@ class Account extends Component {
           <div className='row'>
             <div className='col-lg-6 margin-bottom-md'>
               <label htmlFor='email'>Email Address</label>
-              <input type='text' value={this.state.form.email} className='form-control' onChange={FormLib.handleChange.bind(this, 'email')} />
+              <input type='text' value={this.state.form.email} className='form-control' onChange={FormLib.handleChange(this, 'email')} />
             </div>
             <div className='col-lg-6 margin-bottom-md'>
               <label htmlFor='password'>Password</label>
-              <input type='password' className='form-control' placeholder='Leave blank to keep current password' onChange={FormLib.handleChange.bind(this, 'password')} />
+              <input type='password' className='form-control' placeholder='Leave blank to keep current password' onChange={FormLib.handleChange(this, 'password')} />
             </div>
           </div>
 

@@ -1,9 +1,9 @@
-import _ from 'underscore'
+import * as _ from 'underscore'
 
 _.mixin({
 
   // Make routing available every where
-  route (url, options = []) {
+  route (url: string, options:{_blank?: boolean} = {}) {
     // JS routes look like: users/somthing
     // Server routes look like /users
     // External routes look like http://some.where
@@ -14,10 +14,10 @@ _.mixin({
     }
 
     // We have an external site, add target: _blank
-    if (url.indexOf('.') > -1 && options._blank !== false) {
+    if (url.indexOf('.') > -1 && options?._blank !== false) {
       window.open(url, '_blank').focus()
       // Internal js or server route
-    } else window.location = url
+    } else window.location.href = url
   },
 
   getRoute () {
@@ -27,18 +27,18 @@ _.mixin({
 
   // True deep native copy.
   // Neither Object.create(obj), _.clone and _.extend are deep copies
-  copy (obj) {
+  copy (obj: unknown) {
     return JSON.parse(JSON.stringify(obj))
   },
 
   // True deep native equals.
   // Neither Object.is(obj) are good comparitors
-  equals (obj1, obj2) {
+  equals (obj1: unknown, obj2: unknown) {
     return JSON.stringify(obj1) === JSON.stringify(obj2)
   },
 
-  capitalize (string) {
-    return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase()
+  capitalize (str: string) {
+    return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase()
   },
 
   uuid () {
@@ -48,7 +48,7 @@ _.mixin({
     })
   },
 
-  base64Decode (str, callback) {
+  base64Decode (str: string, callback: () => void) {
     var output = str.replace('-', '+').replace('_', '/')
     switch (output.length % 4) {
       case 0:
@@ -68,8 +68,8 @@ _.mixin({
   },
 
   // https://github.com/Battlefy/simple-slug
-  slug (string) {
-    return string
+  slug (str: string) {
+    return str
       .replace(/\s/g, '-')
       .replace(/[^a-zA-Z0-9 -]+/g, '')
       .replace(/^-+|-+$/g, '')

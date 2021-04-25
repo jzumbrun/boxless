@@ -1,19 +1,28 @@
 import React from 'react'
-import AlertStore from '../stores/alert_store.js'
+import AlertStore, { IAlert, IMessage } from '../stores/alert_store.js'
+
+interface IProps {
+
+}
+
+interface IState {
+  alerts: IAlert[]
+}
 
 class Alerts extends React.Component {
-  constructor (props) {
+  state: IState
+  constructor (props: IProps) {
     super(props)
 
     this.state = {
       alerts: []
     }
 
-    AlertStore.on('add.success', (alerts) => {
+    AlertStore.on('add.success', (alerts: IAlert[]) => {
       this.setState({ alerts: alerts })
     })
 
-    AlertStore.on('delete.success', (alerts) => {
+    AlertStore.on('delete.success', (alerts: IAlert[]) => {
       this.setState({ alerts: alerts })
     })
   }
@@ -21,7 +30,7 @@ class Alerts extends React.Component {
   /**
     * Handle Dismiss
     */
-  handleDismiss (message) {
+  handleDismiss (message: IMessage) {
     AlertStore.delete(message)
   }
 

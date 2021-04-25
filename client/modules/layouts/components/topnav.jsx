@@ -1,7 +1,7 @@
 import React from 'react'
 import _ from 'underscore'
-import UserStore from 'modules/routes/users/stores/user_store'
-import Dropdown from 'modules/common/dropdown/components/dropdown.jsx'
+import UserStore from '../../routes/users/stores/user_store'
+import Dropdown from '../../common/dropdown/components/dropdown.jsx'
 
 class TopNav extends React.Component {
   constructor (props) {
@@ -23,7 +23,7 @@ class TopNav extends React.Component {
   handleCurrentChange () {
     this.setState({ current: UserStore.current })
 
-    if (UserStore.current._id) {
+    if (UserStore.current.id) {
       window.location = '#/home/index'
     } else {
       window.location = '#/'
@@ -46,7 +46,7 @@ class TopNav extends React.Component {
               <img src='/assets/images/logo.png' />
             </a>
           </div>
-          {!this.state.current._id &&
+          {!this.state.current.id &&
             <div className='container'>
               <ul className='nav navbar-nav'>
                 <li>
@@ -55,7 +55,7 @@ class TopNav extends React.Component {
                 </li>
               </ul>
             </div>}
-          {this.state.current._id &&
+          {this.state.current.id &&
             <div className='container'>
               <ul className='nav navbar-nav main-menu'>
                 <li>
